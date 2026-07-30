@@ -1,0 +1,11 @@
+#!/bin/sh
+# Project policy (CLAUDE.md): commits use only the repo's configured git author.
+# Strip any Claude/Cursor/AI/Copilot/Codex attribution trailer so it can never land in a commit message.
+msg="$1"
+perl -ni -e 'print unless
+  /^\s*Co-authored-by:.*(claude|anthropic|cursor|github|copilot|openai|codex|bot)/i
+  || /noreply\@(anthropic|github|openai|google|microsoft)/i
+  || /cursoragent\@cursor/i
+  || /generated with .*(claude|copilot|codex|ai|gpt)/i
+  || /🤖/u
+  || /via .*AI/i' "$msg"
