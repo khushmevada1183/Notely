@@ -213,7 +213,10 @@ import './contrib/url/browser/url.contribution.js';
 import './contrib/opener/browser/opener.contribution.js';
 import './contrib/commands/common/commands.contribution.js';
 import './contrib/list/browser/list.contribution.js';
+import './contrib/bulkEdit/browser/bulkEditService.js';
 import './contrib/accessibility/browser/accessibility.contribution.js';
+import './contrib/minimalEditor/browser/minimalAccessibilitySignal.contribution.js';
+import './contrib/minimalEditor/browser/minimalExtensionHostServices.contribution.js';
 import './contrib/minimalEditor/browser/minimalEditor.contribution.js';
 
 //#endregion

@@ -117,6 +117,7 @@ import './contrib/files/electron-browser/fileActions.contribution.js';
 import './contrib/codeEditor/electron-browser/codeEditor.contribution.js';
 import './services/themes/electron-browser/themes.contribution.js';
 import './contrib/splash/electron-browser/splash.contribution.js';
+import './contrib/debug/electron-browser/extensionHostDebugService.js';
 
 //#endregion
 

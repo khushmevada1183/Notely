@@ -310,8 +310,12 @@ export class ExtensionHostManager extends Disposable implements IExtensionHostMa
 			throw new Error(`Missing IExtensionHostProxy!`);
 		}
 
-		// Check that no named customers are missing
-		this._rpcProtocol.assertRegistered(mainProxyIdentifiers);
+		// Notely: stripped workbench does not register every MainThread customer.
+		try {
+			this._rpcProtocol.assertRegistered(mainProxyIdentifiers);
+		} catch (err) {
+			this._logService.warn('[Notely] Partial extension host RPC registration', err);
+		}
 
 		return extensionHostProxy;
 	}

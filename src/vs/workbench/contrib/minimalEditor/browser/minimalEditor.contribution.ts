@@ -18,5 +18,7 @@ configurationRegistry.registerDefaultConfigurations([{
 		'workbench.startupEditor': 'none',
 		'workbench.enableExperiments': false,
 		'telemetry.telemetryLevel': 'off',
+		'files.simpleDialog.enable': true,
+		'workbench.colorTheme': 'Just Black',
 	}
 }]);
