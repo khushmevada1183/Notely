@@ -1,5 +1,7 @@
 import * as monaco from 'monaco-editor';
 import './electron-api.d.ts';
+import type { FileData } from './minimal-file-service';
+import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
 
 const EDITOR_CHANNELS = [
@@ -18,10 +20,12 @@ const EDITOR_CHANNELS = [
 ] as const;
 
 let editor: monaco.editor.IStandaloneCodeEditor;
+let currentFile: FileData | null = null;
 let isDirty = false;
 
 function updateWindowTitle(): void {
-	document.title = isDirty ? 'Minimal Editor *' : 'Minimal Editor';
+	const name = currentFile?.name ?? 'Untitled';
+	document.title = `${isDirty ? '* ' : ''}${name} - Minimal Editor`;
 }
 
 function loadMonacoStylesheet(): void {
@@ -53,7 +57,12 @@ function setupEditorListeners(): void {
 
 function setupIpcListeners(): void {
 	window.electronAPI.on('file:opened', (data) => {
-		console.log('file opened', data);
+		const file = data as FileData;
+		currentFile = file;
+		editor.setValue(file.content);
+		monaco.editor.setModelLanguage(editor.getModel()!, detectLanguage(file.name));
+		isDirty = false;
+		updateWindowTitle();
 	});
 
 	for (const channel of EDITOR_CHANNELS) {
