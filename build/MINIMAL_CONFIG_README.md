@@ -35,6 +35,26 @@ The following dependencies are marked as external (not bundled):
 - **Themes**: Enabled - VS Code theme definitions will be bundled
 - **Grammars**: Enabled - TextMate grammar files for syntax highlighting will be bundled
 
+## Dependencies
+
+Minimal Editor uses a separate dependency manifest at the repo root: `package-minimal.json` (5 runtime + 5 dev dependencies, 10 total).
+
+### Isolated install (Option B — preferred)
+
+To avoid polluting VS Code's large root `node_modules`, install on demand into `node_modules-minimal/`:
+
+```bash
+bash scripts/install-minimal-deps.sh
+```
+
+This copies `package-minimal.json` into `node_modules-minimal/package.json` and runs `npm install --prefix node_modules-minimal`. The directory is gitignored.
+
+Runtime deps: `electron`, `monaco-editor`, `monaco-textmate`, `onigasm`, `vscode-textmate`.
+
+Dev/build deps: `electron-builder`, `esbuild`, `npm-run-all2`, `rimraf`, `typescript`.
+
+**Note:** Root VS Code gulp tasks (`minimal:compile`, etc.) still require the main repo's `node_modules` (gulp, build tooling). The isolated tree supplies Monaco/Electron packages for packaging and runtime; wire `NODE_PATH=node_modules-minimal/node_modules` when running the minimal app outside the full VS Code dev environment.
+
 ## Validation
 
 To validate the configuration:
@@ -47,6 +67,7 @@ To run comprehensive tests:
 
 ```bash
 node build/test-minimal-config.cjs
+npm run minimal:deps-test
 ```
 
 ## File Location
