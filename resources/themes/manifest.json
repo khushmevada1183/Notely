@@ -1,0 +1,116 @@
+[
+  {
+    "id": "theme-abyss-abyss-color-theme",
+    "label": "Abyss",
+    "uiTheme": "vs-dark",
+    "path": "theme-abyss-abyss-color-theme.json"
+  },
+  {
+    "id": "theme-defaults-2026-dark",
+    "label": "Dark 2026",
+    "uiTheme": "vs-dark",
+    "path": "theme-defaults-2026-dark.json"
+  },
+  {
+    "id": "theme-defaults-2026-light",
+    "label": "Light 2026",
+    "uiTheme": "vs",
+    "path": "theme-defaults-2026-light.json"
+  },
+  {
+    "id": "theme-defaults-dark_modern",
+    "label": "Dark Modern",
+    "uiTheme": "vs-dark",
+    "path": "theme-defaults-dark_modern.json"
+  },
+  {
+    "id": "theme-defaults-dark_plus",
+    "label": "Dark+",
+    "uiTheme": "vs-dark",
+    "path": "theme-defaults-dark_plus.json"
+  },
+  {
+    "id": "theme-defaults-dark_vs",
+    "label": "Dark (Visual Studio)",
+    "uiTheme": "vs-dark",
+    "path": "theme-defaults-dark_vs.json"
+  },
+  {
+    "id": "theme-defaults-hc_black",
+    "label": "Dark High Contrast",
+    "uiTheme": "hc-black",
+    "path": "theme-defaults-hc_black.json"
+  },
+  {
+    "id": "theme-defaults-hc_light",
+    "label": "Light High Contrast",
+    "uiTheme": "hc-light",
+    "path": "theme-defaults-hc_light.json"
+  },
+  {
+    "id": "theme-defaults-light_modern",
+    "label": "Light Modern",
+    "uiTheme": "vs",
+    "path": "theme-defaults-light_modern.json"
+  },
+  {
+    "id": "theme-defaults-light_plus",
+    "label": "Light+",
+    "uiTheme": "vs",
+    "path": "theme-defaults-light_plus.json"
+  },
+  {
+    "id": "theme-defaults-light_vs",
+    "label": "Light (Visual Studio)",
+    "uiTheme": "vs",
+    "path": "theme-defaults-light_vs.json"
+  },
+  {
+    "id": "theme-kimbie-dark-kimbie-dark-color-theme",
+    "label": "Kimbie Dark",
+    "uiTheme": "vs-dark",
+    "path": "theme-kimbie-dark-kimbie-dark-color-theme.json"
+  },
+  {
+    "id": "theme-monokai-monokai-color-theme",
+    "label": "Monokai",
+    "uiTheme": "vs-dark",
+    "path": "theme-monokai-monokai-color-theme.json"
+  },
+  {
+    "id": "theme-monokai-dimmed-dimmed-monokai-color-theme",
+    "label": "Monokai Dimmed",
+    "uiTheme": "vs-dark",
+    "path": "theme-monokai-dimmed-dimmed-monokai-color-theme.json"
+  },
+  {
+    "id": "theme-quietlight-quietlight-color-theme",
+    "label": "Quiet Light",
+    "uiTheme": "vs",
+    "path": "theme-quietlight-quietlight-color-theme.json"
+  },
+  {
+    "id": "theme-red-Red-color-theme",
+    "label": "Red",
+    "uiTheme": "vs-dark",
+    "path": "theme-red-Red-color-theme.json"
+  },
+  {
+    "id": "theme-solarized-dark-solarized-dark-color-theme",
+    "label": "Solarized Dark",
+    "uiTheme": "vs-dark",
+    "path": "theme-solarized-dark-solarized-dark-color-theme.json"
+  },
+  {
+    "id": "theme-solarized-light-solarized-light-color-theme",
+    "label": "Solarized Light",
+    "uiTheme": "vs",
+    "path": "theme-solarized-light-solarized-light-color-theme.json"
+  },
+  {
+    "id": "theme-tomorrow-night-blue-tomorrow-night-blue-color-theme",
+    "label": "Tomorrow Night Blue",
+    "uiTheme": "vs-dark",
+    "path": "theme-tomorrow-night-blue-tomorrow-night-blue-color-theme.json"
+  }
+]
