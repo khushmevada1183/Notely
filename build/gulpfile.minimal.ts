@@ -32,6 +32,8 @@ const compileMinimalTask = task.define('compile-minimal', async () => {
 });
 
 const copyMinimalResourcesTask = task.define('copy-minimal-resources', () => {
+	// CJS bundles; root package.json is ESM — scope CommonJS to out-minimal only
+	fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify({ type: 'commonjs' }, null, 2));
 	const resourcesSrc = path.join(root, 'resources');
 	const resourcesDest = path.join(outDir, 'resources');
 	if (fs.existsSync(resourcesSrc)) {
