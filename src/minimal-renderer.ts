@@ -3,7 +3,8 @@ import './electron-api.d.ts';
 import type { FileData } from './minimal-file-service';
 import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
-import { applySavedTheme } from './theme-service';
+import { applySavedTheme, applyTheme } from './theme-service';
+import { showThemeSelector } from './theme-selector';
 
 const EDITOR_CHANNELS = [
 	'editor:openFile',
@@ -14,7 +15,6 @@ const EDITOR_CHANNELS = [
 	'editor:replace',
 	'editor:toggleWordWrap',
 	'editor:toggleLineNumbers',
-	'editor:selectTheme',
 ] as const;
 
 let editor: monaco.editor.IStandaloneCodeEditor;
@@ -33,12 +33,20 @@ function loadMonacoStylesheet(): void {
 	document.head.appendChild(link);
 }
 
+function loadThemeSelectorStylesheet(): void {
+	const link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.href = 'theme-selector.css';
+	document.head.appendChild(link);
+}
+
 async function initMinimalEditor(): Promise<void> {
 	const container = document.getElementById('container');
 	if (!container) {
 		throw new Error('Missing #container');
 	}
 	loadMonacoStylesheet();
+	loadThemeSelectorStylesheet();
 	configureMonacoEnvironment('..');
 	editor = monaco.editor.create(container, getDefaultEditorOptions());
 	await applySavedTheme();
@@ -102,6 +110,9 @@ function setupIpcListeners(): void {
 	window.electronAPI.on('editor:saveFile', () => { void saveFile(); });
 	window.electronAPI.on('editor:saveFileAs', () => { void saveFileAs(); });
 	window.electronAPI.on('editor:newFile', () => newFile());
+	window.electronAPI.on('editor:selectTheme', () => {
+		showThemeSelector((id) => applyTheme(id));
+	});
 
 	for (const channel of EDITOR_CHANNELS) {
 		window.electronAPI.on(channel, () => {
