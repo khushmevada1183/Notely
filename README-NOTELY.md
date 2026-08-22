@@ -17,6 +17,10 @@ node -v   # v24.18.0
 ## Build
 
 ```bash
+./scripts/notely-setup.sh
+```
+
+Or manually:
 npm install --ignore-scripts
 # Install built-in extension dependencies (grammar extensions under extensions/)
 for d in extensions/*/; do (cd "$d" && npm install --ignore-scripts 2>/dev/null) || true; done
