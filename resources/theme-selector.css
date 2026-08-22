@@ -1,0 +1,10 @@
+.theme-selector-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.theme-selector-list {
+  background: #252526; color: #ccc; padding: 8px; max-height: 60vh; overflow: auto;
+  min-width: 280px; border: 1px solid #454545;
+}
+.theme-item { display: block; width: 100%; text-align: left; padding: 8px; background: none; border: none; color: inherit; cursor: pointer; }
+.theme-item:hover { background: #094771; }
