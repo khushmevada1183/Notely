@@ -1,0 +1,112 @@
+[
+	{
+		"languageId": "bat",
+		"scopeName": "source.batchfile",
+		"file": "source.batchfile.json"
+	},
+	{
+		"languageId": "c",
+		"scopeName": "source.c",
+		"file": "source.c.json"
+	},
+	{
+		"languageId": "cpp",
+		"scopeName": "source.cpp",
+		"file": "source.cpp.json"
+	},
+	{
+		"languageId": "css",
+		"scopeName": "source.css",
+		"file": "source.css.json"
+	},
+	{
+		"languageId": "go",
+		"scopeName": "source.go",
+		"file": "source.go.json"
+	},
+	{
+		"languageId": "html",
+		"scopeName": "text.html.basic",
+		"file": "text.html.basic.json"
+	},
+	{
+		"languageId": "java",
+		"scopeName": "source.java",
+		"file": "source.java.json"
+	},
+	{
+		"languageId": "javascript",
+		"scopeName": "source.js",
+		"file": "source.js.json"
+	},
+	{
+		"languageId": "javascriptreact",
+		"scopeName": "source.js.jsx",
+		"file": "source.js.jsx.json"
+	},
+	{
+		"languageId": "json",
+		"scopeName": "source.json",
+		"file": "source.json.json"
+	},
+	{
+		"languageId": "markdown",
+		"scopeName": "text.html.markdown",
+		"file": "text.html.markdown.json"
+	},
+	{
+		"languageId": "php",
+		"scopeName": "source.php",
+		"file": "source.php.json"
+	},
+	{
+		"languageId": "python",
+		"scopeName": "source.python",
+		"file": "source.python.json"
+	},
+	{
+		"languageId": "ruby",
+		"scopeName": "source.ruby",
+		"file": "source.ruby.json"
+	},
+	{
+		"languageId": "rust",
+		"scopeName": "source.rust",
+		"file": "source.rust.json"
+	},
+	{
+		"languageId": "shell",
+		"scopeName": "source.shell",
+		"file": "source.shell.json"
+	},
+	{
+		"languageId": "sql",
+		"scopeName": "source.sql",
+		"file": "source.sql.json"
+	},
+	{
+		"languageId": "swift",
+		"scopeName": "source.swift",
+		"file": "source.swift.json"
+	},
+	{
+		"languageId": "typescript",
+		"scopeName": "source.ts",
+		"file": "source.ts.json"
+	},
+	{
+		"languageId": "typescriptreact",
+		"scopeName": "source.tsx",
+		"file": "source.tsx.json"
+	},
+	{
+		"languageId": "xml",
+		"scopeName": "text.xml",
+		"file": "text.xml.json"
+	},
+	{
+		"languageId": "yaml",
+		"scopeName": "source.yaml",
+		"file": "source.yaml.json"
+	}
+]
