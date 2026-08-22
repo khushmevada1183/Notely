@@ -44,6 +44,8 @@ const glob = promisify(globCallback);
 const rcedit = promisify(rceditCallback);
 const root = path.dirname(import.meta.dirname);
 const commit = getVersion(root);
+/** Notely is a minimal editor — skip Copilot packaging inherited from VS Code. */
+const includeCopilotInBuild = product.applicationName !== 'notely';
 
 // Build
 const vscodeEntryPoints = [
@@ -369,8 +371,11 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 			.pipe(filter(depFilterPattern))
 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, '.moduleignore')))
 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
-		ensureCopilotPlatformPackage(platform, arch);
-		const copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
+		let copilotRuntimePrebuilds = es.readArray([]);
+		if (includeCopilotInBuild) {
+			ensureCopilotPlatformPackage(platform, arch);
+			copilotRuntimePrebuilds = gulp.src(getCopilotRuntimePrebuildFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
+		}
 		ensureOSProxyResolverPlatformPackage(platform, arch);
 		const osProxyResolverPlatformPackage = gulp.src(getOSProxyResolverPlatformFiles(platform, arch), { base: '.', dot: true, allowEmpty: true });
 		const deps = es.merge(cleanedDeps, copilotRuntimePrebuilds, osProxyResolverPlatformPackage)
@@ -702,8 +707,10 @@ BUILD_TARGETS.forEach(buildTarget => {
 			compileNativeExtensionsBuildTask,
 			util.rimraf(path.join(buildRoot, destinationFolderName)),
 			packageTask(platform, arch, sourceFolderName, destinationFolderName, opts),
-			prepareCopilotRipgrepShimTask(platform, arch, destinationFolderName)
 		];
+		if (includeCopilotInBuild) {
+			packageTasks.push(prepareCopilotRipgrepShimTask(platform, arch, destinationFolderName));
+		}
 
 		if (platform === 'win32') {
 			packageTasks.push(patchWin32DependenciesTask(destinationFolderName));
@@ -713,6 +720,13 @@ BUILD_TARGETS.forEach(buildTarget => {
 		task.task(vscodeTaskCI);
 
 		let vscodeTask: task.Task;
+		const prePackageExtensionTasks: task.Task[] = [
+			copyCodiconsTask,
+			cleanExtensionsBuildTask,
+			compileNonNativeExtensionsBuildTask,
+			...(includeCopilotInBuild ? [compileCopilotExtensionBuildTask] : []),
+			compileExtensionMediaBuildTask,
+		];
 		if (useEsbuildTranspile) {
 			const esbuildBundleTask = task.define(
 				`esbuild-bundle${dashed(platform)}${dashed(arch)}${dashed(minified)}`,
@@ -725,11 +739,7 @@ BUILD_TARGETS.forEach(buildTarget => {
 				)
 			);
 			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
-				copyCodiconsTask,
-				cleanExtensionsBuildTask,
-				compileNonNativeExtensionsBuildTask,
-				compileCopilotExtensionBuildTask,
-				compileExtensionMediaBuildTask,
+				...prePackageExtensionTasks,
 				writeISODate('out-build'),
 				esbuildBundleTask,
 				vscodeTaskCI
@@ -737,10 +747,7 @@ BUILD_TARGETS.forEach(buildTarget => {
 		} else {
 			vscodeTask = task.define(`vscode${dashed(platform)}${dashed(arch)}${dashed(minified)}`, task.series(
 				minified ? compileBuildWithManglingTask : compileBuildWithoutManglingTask,
-				cleanExtensionsBuildTask,
-				compileNonNativeExtensionsBuildTask,
-				compileCopilotExtensionBuildTask,
-				compileExtensionMediaBuildTask,
+				...prePackageExtensionTasks,
 				minified ? minifyVSCodeTask : bundleVSCodeTask,
 				vscodeTaskCI
 			));
