@@ -11,7 +11,7 @@ fi
 
 npm install --ignore-scripts
 for d in extensions/*/; do
-  [[ -f "${d}package.json" ]] && npm install --ignore-scripts --prefix "$d" >/dev/null 2>&1 || true
+  [[ -f "${d}package.json" ]] && npm install --ignore-scripts --no-package-lock --prefix "$d" >/dev/null 2>&1 || true
 done
 npm install --ignore-scripts --prefix build >/dev/null 2>&1 || true
 
