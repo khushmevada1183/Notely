@@ -1,6 +1,6 @@
-# Minimal Editor — Keyboard Shortcuts
+# Notely — Keyboard Shortcuts
 
-Platform-specific keybindings for Minimal Editor (design §10.3).
+Platform-specific keybindings for Notely (design §10.3).
 
 | Action | Windows / Linux | macOS |
 |--------|-----------------|-------|

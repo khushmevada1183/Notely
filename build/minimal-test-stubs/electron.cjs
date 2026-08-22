@@ -6,6 +6,6 @@ module.exports = {
 		showOpenDialog: async () => ({ canceled: true, filePaths: [] }),
 		showSaveDialog: async () => ({ canceled: true, filePath: undefined }),
 	},
-	app: { name: 'Minimal Editor' },
+	app: { name: 'Notely' },
 	Menu: { buildFromTemplate: () => ({}), setApplicationMenu: () => undefined },
 };

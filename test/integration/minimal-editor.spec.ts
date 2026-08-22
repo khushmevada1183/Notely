@@ -32,7 +32,7 @@ async function launchApp() {
 	});
 }
 
-test.describe('Minimal Editor integration', () => {
+test.describe('Notely integration', () => {
 	test.beforeEach(({}, testInfo) => {
 		test.skip(!!skipReason, skipReason);
 	});

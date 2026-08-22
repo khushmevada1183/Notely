@@ -1,6 +1,6 @@
 {
-  "appId": "com.minimal.editor",
-  "productName": "Minimal Editor",
+  "appId": "com.khushmevada.notely",
+  "productName": "Notely",
   "electronVersion": "28.3.3",
   "npmRebuild": false,
   "directories": {
@@ -12,7 +12,7 @@
     "**/*"
   ],
   "extraMetadata": {
-    "name": "minimal-editor",
+    "name": "notely",
     "version": "1.0.0",
     "main": "minimal-main.js"
   },
@@ -29,6 +29,6 @@
     "target": ["AppImage", "deb"],
     "category": "Development",
     "icon": "resources/icon.png",
-    "maintainer": "Minimal Editor <minimal@example.com>"
+    "maintainer": "Notely <khushmevada1183@gmail.com>"
   }
 }

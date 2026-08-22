@@ -15,7 +15,7 @@ let isDirty = false;
 
 function updateWindowTitle(): void {
 	const name = currentFile?.name ?? 'Untitled';
-	document.title = `${isDirty ? '* ' : ''}${name} - Minimal Editor`;
+	document.title = `${isDirty ? '* ' : ''}${name} - Notely`;
 }
 
 function loadMonacoStylesheet(): void {

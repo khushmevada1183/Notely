@@ -1,6 +1,6 @@
-# Minimal Editor
+# Notely
 
-A lightweight, cross-platform text editor (Monaco + Electron). **This repository is the Minimal Editor app only** — the full VS Code workbench, extension tree, and server entrypoints have been removed. What remains is the minimal source under `src/minimal-*.ts`, vendored themes/grammars in `resources/`, and the `minimal:*` / `package-minimal:*` build scripts.
+A lightweight, cross-platform text editor (Monaco + Electron). **This repository is Notely only** — the full VS Code workbench, extension tree, and server entrypoints have been removed. What remains is the minimal source under `src/minimal-*.ts`, vendored themes/grammars in `resources/`, and the `minimal:*` / `package-minimal:*` build scripts.
 
 No extensions, Git, terminal, debugger, or workspace complexity.
 
@@ -83,9 +83,9 @@ Settings are stored in:
 
 | Platform | Location |
 |----------|----------|
-| Linux | `~/.config/minimal-editor/config.json` |
-| Windows | `%APPDATA%/MinimalEditor/config.json` |
-| macOS | `~/Library/Application Support/MinimalEditor/config.json` |
+| Linux | `~/.config/notely/config.json` |
+| Windows | `%APPDATA%/Notely/config.json` |
+| macOS | `~/Library/Application Support/Notely/config.json` |
 
 Persisted options include theme, word wrap, line numbers, font size, tab size, insert spaces, and window bounds.
 

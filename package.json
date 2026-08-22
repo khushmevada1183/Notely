@@ -1,10 +1,10 @@
 {
-  "name": "minimal-editor",
+  "name": "notely",
   "version": "1.0.0",
-  "description": "Lightweight cross-platform notepad powered by Monaco Editor",
+  "description": "Notely — lightweight cross-platform text editor powered by Monaco",
   "private": true,
   "main": "out-minimal/minimal-main.js",
-  "author": "Minimal Editor",
+  "author": "khushmevada1183",
   "license": "MIT",
   "scripts": {
     "build": "node build/minimal-build.cjs all",

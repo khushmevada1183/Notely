@@ -98,7 +98,7 @@ const copyMinimalResourcesTask = task.define('copy-minimal-resources', () => {
 		version: minimalPkg.version,
 		main: 'minimal-main.js',
 		type: 'commonjs',
-		author: 'Minimal Editor <minimal@example.com>',
+		author: 'Notely <khushmevada1183@gmail.com>',
 		dependencies: runtimeDeps,
 	};
 	fs.writeFileSync(path.join(outDir, 'package.json'), JSON.stringify(appPkg, null, 2));

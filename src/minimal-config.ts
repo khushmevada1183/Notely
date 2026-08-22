@@ -15,12 +15,12 @@ export interface IMinimalConfiguration {
 
 export function getConfigDir(): string {
 	if (process.platform === 'darwin') {
-		return path.join(os.homedir(), 'Library', 'Application Support', 'MinimalEditor');
+		return path.join(os.homedir(), 'Library', 'Application Support', 'Notely');
 	}
 	if (process.platform === 'win32') {
-		return path.join(os.homedir(), 'AppData', 'Roaming', 'MinimalEditor');
+		return path.join(os.homedir(), 'AppData', 'Roaming', 'Notely');
 	}
-	return path.join(os.homedir(), '.config', 'minimal-editor');
+	return path.join(os.homedir(), '.config', 'notely');
 }
 
 export function getDefaultConfig(): IMinimalConfiguration {

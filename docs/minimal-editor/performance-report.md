@@ -1,4 +1,4 @@
-# Minimal Editor — Performance Report
+# Notely — Performance Report
 
 **Report date:** 2026-08-23  
 **Version:** 1.0.0  
@@ -78,7 +78,7 @@ Expected improvement: 200–400 ms from minification + no sourcemaps.
 
 ### Memory (> 100 MB empty)
 
-Electron main + GPU + renderer processes exceed 100 MB combined RSS on Linux. The 100 MB requirement assumed a single-process footprint; Minimal Editor uses standard Electron multi-process architecture.
+Electron main + GPU + renderer processes exceed 100 MB combined RSS on Linux. The 100 MB requirement assumed a single-process footprint; Notely uses standard Electron multi-process architecture.
 
 | Component | Approx. share |
 |-----------|---------------|

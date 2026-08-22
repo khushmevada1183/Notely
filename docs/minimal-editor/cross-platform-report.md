@@ -1,4 +1,4 @@
-# Minimal Editor — Cross-Platform Test Report
+# Notely — Cross-Platform Test Report
 
 **Report date:** 2026-08-23  
 **Version under test:** 1.0.0 (pre-release build from `feat/minimal-editor`)  
@@ -22,7 +22,7 @@
 | Check | Result | Notes |
 |-------|--------|-------|
 | `npm run minimal:build` | ✅ Pass | Produces `out-minimal/` |
-| `npm run package-minimal:linux` | ✅ Pass | `dist-minimal/Minimal Editor-0.1.0.AppImage` (~110 MB) |
+| `npm run package-minimal:linux` | ✅ Pass | `dist-minimal/Notely-1.0.0.AppImage` (~110 MB) |
 | App launches from dev build | ✅ Pass | Requires `--no-sandbox` when SUID sandbox is not configured (common in dev/CI) |
 
 ### Manual checklist (design §12.4)

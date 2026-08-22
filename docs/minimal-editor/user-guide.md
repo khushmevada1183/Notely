@@ -1,6 +1,6 @@
-# Minimal Editor — User Guide
+# Notely — User Guide
 
-Minimal Editor is a fast, distraction-free text editor for local files. This guide covers everyday workflows.
+Notely is a fast, distraction-free text editor for local files. This guide covers everyday workflows.
 
 ## Getting Started
 
@@ -42,7 +42,7 @@ Prompts for a destination path and writes the buffer there.
 
 ### Unsaved Changes
 
-When you edit a file, an asterisk appears in the window title (for example, `* notes.txt - Minimal Editor`). Closing the window with unsaved changes shows a prompt to **Save**, **Discard**, or **Cancel**.
+When you edit a file, an asterisk appears in the window title (for example, `* notes.txt - Notely`). Closing the window with unsaved changes shows a prompt to **Save**, **Discard**, or **Cancel**.
 
 ## Find and Replace
 
@@ -57,7 +57,7 @@ Use the find widget controls to match case, whole words, or use regular expressi
 
 ## Themes
 
-Minimal Editor ships with built-in VS Code themes.
+Notely ships with built-in VS Code themes.
 
 - Menu: **View → Select Theme**
 - Choose a theme from the overlay list; the selection is saved automatically and restored on next launch.
@@ -120,7 +120,7 @@ See [keyboard-shortcuts.md](./keyboard-shortcuts.md) for the full shortcut table
 
 ## Tips
 
-- Minimal Editor edits **one file at a time** — there are no editor tabs.
+- Notely edits **one file at a time** — there are no editor tabs.
 - There is no integrated terminal or Git; use your system tools alongside the editor.
 - Configuration is stored as JSON; there is no graphical settings panel.
 
