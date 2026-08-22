@@ -35,6 +35,18 @@ export function getDefaultConfig(): IMinimalConfiguration {
 	};
 }
 
+export function normalizeWindowBounds(
+	bounds: { x: number; y: number; width: number; height: number },
+	screen: { width: number; height: number },
+): typeof bounds {
+	const minVisible = 50;
+	if (bounds.x + minVisible < 0 || bounds.y + minVisible < 0 ||
+		bounds.x > screen.width || bounds.y > screen.height) {
+		return getDefaultConfig().windowBounds;
+	}
+	return bounds;
+}
+
 export function loadConfig(): IMinimalConfiguration {
 	try {
 		const configPath = path.join(getConfigDir(), 'config.json');

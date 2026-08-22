@@ -1,6 +1,6 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, screen } from 'electron';
 import * as path from 'path';
-import { loadConfig, saveConfig } from './minimal-config';
+import { loadConfig, normalizeWindowBounds, saveConfig } from './minimal-config';
 import * as fileService from './minimal-file-service';
 import { createApplicationMenu } from './minimal-menu';
 
