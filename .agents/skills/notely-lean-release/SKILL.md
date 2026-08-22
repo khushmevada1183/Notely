@@ -14,7 +14,7 @@ Notely's **runtime** is a minimal notepad workbench; its **build tree** is still
 | Layer | Command | Use for |
 |-------|---------|---------|
 | **Dev** | `npm run compile-client` + `./scripts/notely-run.sh` | Daily work, `notely-ci.yml` |
-| **Release (lean)** | `npm run gulp notely-<platform>-<arch>` | All tag releases (3 parallel CI jobs) |
+| **Release (lean)** | `npm run gulp notely-<platform>-<arch>` | Linux `.deb` on tags (mac/win commented out in CI) |
 | **Release (full)** | `npm run gulp vscode-<platform>-<arch>` | Debugging only — compiles all 109 extensions |
 
 **Do not** use `compile-build-with-mangling` in CI — use esbuild path inside gulp tasks (default).
@@ -33,7 +33,7 @@ Runtime uses `workbench.minimal.main.ts` via `workbench.desktop.main.ts`. Electr
 | Workflow | Trigger | Build command |
 |----------|---------|---------------|
 | `notely-ci.yml` | push/PR `main` | `compile-client` |
-| `notely-release.yml` | `v*` tags | **3 parallel jobs:** `notely-linux-x64`, `notely-darwin-arm64`, `notely-win32-x64` |
+| `notely-release.yml` | `v*` tags | **Linux only** — `notely-linux-x64` → `.deb` (mac/win jobs commented out) |
 
 Upstream workflows stay in `.github/upstream-workflows/` — do not re-enable.
 
@@ -55,7 +55,7 @@ Loader: `build/lib/notelyExtensions.ts` → `compileNotelyExtensionsBuildTask` i
 | Missing syntax colors | Add grammar folder to allowlist |
 | Missing theme | Ensure `theme-*` pattern covers it |
 | Copilot SDK error | `includeCopilotInBuild` false in `gulpfile.vscode.ts` |
-| Mangler error | Never run `compile-build-with-mangling` in CI |
+| Linux `.deb` fails on `code-tunnel-oss` | Notely skips tunnel CLI — deb deps only scan it if present |
 
 ## Release Commands (Linux)
 

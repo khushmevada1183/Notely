@@ -8,7 +8,7 @@ Notely uses:
 | Workflow | Purpose |
 |----------|---------|
 | `.github/workflows/notely-ci.yml` | Compile check on push/PR to `main` |
-| `.github/workflows/notely-release.yml` | Linux `.deb` + macOS `.dmg` + Windows `.exe` on `v*` tags (3 parallel jobs) |
+| `.github/workflows/notely-release.yml` | Linux `.deb` on `v*` tags (mac/win jobs commented out for later) |
 
 See `.agents/skills/notely-lean-release/SKILL.md` for why releases are slow and how to trim them.
 

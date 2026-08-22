@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { existsSync } from 'fs';
 import { spawnSync } from 'child_process';
 import path from 'path';
 import { getChromiumSysroot, getVSCodeSysroot } from './debian/install-sysroot.ts';
@@ -55,9 +56,12 @@ export async function getDependencies(packageType: 'deb' | 'rpm', buildDir: stri
 
 	const appPath = path.join(buildDir, applicationName);
 	// Add the native modules
-	const files = findResult.stdout.toString().trimEnd().split('\n');
-	// Add the tunnel binary.
-	files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
+	const files = findResult.stdout.toString().trimEnd().split('\n').filter(Boolean);
+	// Remote tunnel CLI — VS Code builds this separately; Notely does not ship it.
+	const tunnelPath = path.join(buildDir, 'bin', product.tunnelApplicationName);
+	if (existsSync(tunnelPath)) {
+		files.push(tunnelPath);
+	}
 	// Add the main executable.
 	files.push(appPath);
 	// Add chrome sandbox and crashpad handler.
