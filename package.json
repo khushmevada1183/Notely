@@ -104,7 +104,9 @@
     "minimal:start": "electron out-minimal/minimal-main.js",
     "package-minimal:linux": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --linux --config electron-builder.json",
     "package-minimal:win": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --win --config electron-builder.json",
-    "package-minimal:mac": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --mac --config electron-builder.json"
+    "package-minimal:mac": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --mac --config electron-builder.json",
+    "minimal:analyze-bundle": "node scripts/analyze-minimal-bundle.js",
+    "minimal:build:prod": "MINIMAL_PRODUCTION=1 npm run minimal:build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
