@@ -1,0 +1,18 @@
+{
+  "comment": "Extensions to compile/package for Notely. Full compile still builds all; use this for future packaging slice.",
+  "themes": ["theme-*"],
+  "grammars": [
+    "bat", "coffeescript", "cpp", "csharp", "css", "dart", "diff", "docker",
+    "fsharp", "go", "groovy", "handlebars", "hlsl", "html", "ini", "java",
+    "javascript", "json", "julia", "latex", "less", "log", "lua", "make",
+    "markdown-basics", "objective-c", "perl", "php", "powershell", "pug",
+    "python", "r", "razor", "ruby", "rust", "scss", "shaderlab", "shellscript",
+    "sql", "swift", "typescript", "vb", "xml", "yaml"
+  ],
+  "exclude": [
+    "git", "git-base", "github", "github-authentication", "microsoft-authentication",
+    "npm", "emmet", "typescript-language-features", "json-language-features",
+    "html-language-features", "css-language-features", "markdown-language-features",
+    "terminal-suggest", "debug-auto-launch", "debug-server-ready", "copilot"
+  ]
+}
