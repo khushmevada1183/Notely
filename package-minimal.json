@@ -1,0 +1,28 @@
+{
+  "name": "minimal-editor",
+  "version": "0.1.0",
+  "private": true,
+  "main": "out-minimal/minimal-main.js",
+  "dependencies": {
+    "electron": "^28.3.3",
+    "monaco-editor": "^0.45.0",
+    "monaco-textmate": "^3.0.1",
+    "onigasm": "^2.2.5",
+    "vscode-textmate": "^9.2.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.19.12",
+    "npm-run-all2": "^6.2.0",
+    "rimraf": "^5.0.10",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "clean": "rimraf out-minimal dist-minimal",
+    "compile-minimal": "node build/run-gulp-minimal.cjs compile-minimal",
+    "copy-resources": "node build/run-gulp-minimal.cjs copy-minimal-resources",
+    "build-minimal": "npm-run-all2 clean compile-minimal copy-resources",
+    "start-minimal": "electron out-minimal/minimal-main.js",
+    "package-minimal": "electron-builder --config electron-builder.json"
+  }
+}

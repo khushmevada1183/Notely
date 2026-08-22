@@ -93,7 +93,14 @@
     "update-build-ts-version": "npm install -D typescript@npm:@typescript/typescript6@^6.0.2 && npm install -D @typescript/native@npm:typescript@next && (cd build && npm run typecheck)",
     "install-local-component-explorer": "npm install ../vscode-packages/js-component-explorer/dist/vscode-component-explorer-0.1.0.tgz ../vscode-packages/js-component-explorer/dist/vscode-component-explorer-cli-0.1.0.tgz --no-save && cd build/rspack && npm install ../../../vscode-packages/js-component-explorer/dist/vscode-component-explorer-webpack-plugin-0.1.0.tgz --no-save && cd ../vite && npm install ../../../vscode-packages/js-component-explorer/dist/vscode-component-explorer-vite-plugin-0.1.0.tgz --no-save",
     "symlink-local-component-explorer": "npm install ../vscode-packages/js-component-explorer/packages/explorer ../vscode-packages/js-component-explorer/packages/cli --no-save && cd build/rspack && npm install ../../../vscode-packages/js-component-explorer/packages/webpack-plugin ../../../vscode-packages/js-component-explorer/packages/explorer --no-save && cd ../vite && npm install ../../../vscode-packages/js-component-explorer/packages/vite-plugin ../../../vscode-packages/js-component-explorer/packages/explorer --no-save",
-    "install-latest-component-explorer": "npm install @vscode/component-explorer@next @vscode/component-explorer-cli@next && cd build/rspack && npm install @vscode/component-explorer-webpack-plugin@next @vscode/component-explorer@next && cd ../vite && npm install @vscode/component-explorer-vite-plugin@next @vscode/component-explorer@next"
+    "install-latest-component-explorer": "npm install @vscode/component-explorer@next @vscode/component-explorer-cli@next && cd build/rspack && npm install @vscode/component-explorer-webpack-plugin@next @vscode/component-explorer@next && cd ../vite && npm install @vscode/component-explorer-vite-plugin@next @vscode/component-explorer@next",
+    "minimal:validate": "node build/validate-minimal-config.cjs",
+    "minimal:test-config": "node build/test-minimal-config.cjs",
+    "minimal:clean": "rimraf out-minimal dist-minimal",
+    "minimal:compile": "node build/run-gulp-minimal.cjs compile-minimal",
+    "minimal:copy-resources": "node build/run-gulp-minimal.cjs copy-minimal-resources",
+    "minimal:build": "npm-run-all2 minimal:clean minimal:compile minimal:copy-resources",
+    "minimal:start": "electron out-minimal/minimal-main.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
