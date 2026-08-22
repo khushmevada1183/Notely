@@ -154,15 +154,9 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Setup MSVC toolchain
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-
       - name: Install Node dependencies
         shell: pwsh
         run: |
-          node build/npm/preinstall.ts
           for ($i = 1; $i -le 5; $i++) {
             try {
               npm ci
