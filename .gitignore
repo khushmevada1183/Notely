@@ -34,6 +34,8 @@ test-output.json
 test/componentFixtures/.screenshots/*
 !test/componentFixtures/.screenshots/baseline/
 dist
+dist-minimal/
+node_modules-minimal/
 .playwright-cli
 .playwright-mcp
 .claude/
