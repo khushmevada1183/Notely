@@ -23,6 +23,9 @@
     "copy-resources": "node build/run-gulp-minimal.cjs copy-minimal-resources",
     "build-minimal": "npm-run-all2 clean compile-minimal copy-resources",
     "start-minimal": "electron out-minimal/minimal-main.js",
-    "package-minimal": "electron-builder --config electron-builder.json"
+    "package-minimal": "electron-builder --config electron-builder.json",
+    "package-minimal:linux": "npm run build-minimal && electron-builder --linux --config electron-builder.json",
+    "package-minimal:win": "npm run build-minimal && electron-builder --win --config electron-builder.json",
+    "package-minimal:mac": "npm run build-minimal && electron-builder --mac --config electron-builder.json"
   }
 }

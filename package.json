@@ -101,7 +101,10 @@
     "minimal:compile": "node build/run-gulp-minimal.cjs compile-minimal",
     "minimal:copy-resources": "node build/run-gulp-minimal.cjs copy-minimal-resources",
     "minimal:build": "npm-run-all2 minimal:clean minimal:compile minimal:copy-resources",
-    "minimal:start": "electron out-minimal/minimal-main.js"
+    "minimal:start": "electron out-minimal/minimal-main.js",
+    "package-minimal:linux": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --linux --config electron-builder.json",
+    "package-minimal:win": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --win --config electron-builder.json",
+    "package-minimal:mac": "npm run minimal:build && node_modules-minimal/node_modules/.bin/electron-builder --mac --config electron-builder.json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
