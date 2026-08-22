@@ -14,6 +14,7 @@ const root = path.dirname(import.meta.dirname);
 const config = require('./minimal.config.cjs');
 
 const outDir = path.join(root, config.output.dir);
+const isProd = process.env.MINIMAL_PRODUCTION === '1';
 
 function getMonacoEditorRoot(): string {
 	const rootMonaco = path.join(root, 'node_modules', 'monaco-editor');
@@ -48,6 +49,10 @@ async function bundleMonacoWorkers(monacoEditorRoot: string): Promise<void> {
 			bundle: true,
 			platform: 'browser',
 			format: 'iife',
+			minify: isProd,
+			sourcemap: !isProd,
+			treeShaking: true,
+			drop: isProd ? ['console'] : [],
 			logLevel: 'silent',
 		});
 	}));
@@ -75,7 +80,10 @@ const compileMinimalTask = task.define('compile-minimal', async () => {
 				'.css': 'empty',
 			} : undefined,
 			assetNames: isRenderer ? 'assets/[name]' : undefined,
-			sourcemap: true,
+			minify: isProd,
+			sourcemap: !isProd,
+			treeShaking: true,
+			drop: isProd ? ['console'] : [],
 			logLevel: 'info',
 		});
 	}));
