@@ -3,6 +3,7 @@ import './electron-api.d.ts';
 import type { FileData } from './minimal-file-service';
 import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
+import { applySavedTheme } from './theme-service';
 
 const EDITOR_CHANNELS = [
 	'editor:openFile',
@@ -32,7 +33,7 @@ function loadMonacoStylesheet(): void {
 	document.head.appendChild(link);
 }
 
-function initMinimalEditor(): void {
+async function initMinimalEditor(): Promise<void> {
 	const container = document.getElementById('container');
 	if (!container) {
 		throw new Error('Missing #container');
@@ -40,6 +41,7 @@ function initMinimalEditor(): void {
 	loadMonacoStylesheet();
 	configureMonacoEnvironment('..');
 	editor = monaco.editor.create(container, getDefaultEditorOptions());
+	await applySavedTheme();
 	setupIpcListeners();
 	setupEditorListeners();
 }
@@ -108,4 +110,4 @@ function setupIpcListeners(): void {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', initMinimalEditor);
+document.addEventListener('DOMContentLoaded', () => { void initMinimalEditor(); });

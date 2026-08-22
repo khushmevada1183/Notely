@@ -52,6 +52,8 @@ app.whenReady().then(() => {
 	ipcMain.handle('file:open', () => fileService.openFile());
 	ipcMain.handle('file:save', (_e, { path: filePath, content }: { path: string; content: string }) => fileService.saveFile(filePath, content));
 	ipcMain.handle('file:saveAs', (_e, { content }: { content: string }) => fileService.saveFileAs(content));
+	ipcMain.handle('config:load', () => loadConfig());
+	ipcMain.handle('config:save', (_e, partial: Partial<ReturnType<typeof loadConfig>>) => saveConfig(partial));
 	ipcMain.on('editor:openFile', () => { void handleOpenFile(); });
 	createWindow();
 });
