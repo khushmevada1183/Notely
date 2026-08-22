@@ -2,8 +2,16 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 import { loadConfig, saveConfig } from './minimal-config';
 import * as fileService from './minimal-file-service';
+import { createApplicationMenu } from './minimal-menu';
 
 let mainWindow: BrowserWindow | null = null;
+
+async function handleOpenFile(): Promise<void> {
+	const data = await fileService.openFile();
+	if (data && mainWindow) {
+		mainWindow.webContents.send('file:opened', data);
+	}
+}
 
 function createWindow(): void {
 	const config = loadConfig();
@@ -36,12 +44,15 @@ function createWindow(): void {
 	});
 
 	mainWindow.on('closed', () => { mainWindow = null; });
+
+	createApplicationMenu(mainWindow, () => { void handleOpenFile(); });
 }
 
 app.whenReady().then(() => {
 	ipcMain.handle('file:open', () => fileService.openFile());
 	ipcMain.handle('file:save', (_e, { path: filePath, content }: { path: string; content: string }) => fileService.saveFile(filePath, content));
 	ipcMain.handle('file:saveAs', (_e, { content }: { content: string }) => fileService.saveFileAs(content));
+	ipcMain.on('editor:openFile', () => { void handleOpenFile(); });
 	createWindow();
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') { app.quit(); } });
