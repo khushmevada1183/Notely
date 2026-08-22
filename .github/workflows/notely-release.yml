@@ -49,14 +49,9 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Compile production build
-        run: npm run compile-build
-
-      - name: Package Linux x64
-        run: npm run gulp vscode-linux-x64
-
-      - name: Build .deb package
+      - name: Package Linux x64 (.deb installer)
         run: |
+          npm run gulp vscode-linux-x64
           npm run gulp vscode-linux-x64-prepare-deb
           npm run gulp vscode-linux-x64-build-deb
 
@@ -111,10 +106,7 @@ jobs:
         env:
           npm_config_arch: ${{ env.NPM_ARCH }}
 
-      - name: Compile production build
-        run: npm run compile-build
-
-      - name: Package macOS arm64
+      - name: Package macOS arm64 (.dmg installer)
         run: npm run gulp vscode-darwin-arm64
 
       - name: Collect macOS installer (.dmg with Notely.app)
@@ -162,6 +154,11 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: Setup MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Install Node dependencies
         shell: pwsh
         run: |
@@ -180,10 +177,7 @@ jobs:
           npm_config_arch: ${{ env.NPM_ARCH }}
           npm_config_foreground_scripts: 'true'
 
-      - name: Compile production build
-        run: npm run compile-build
-
-      - name: Package Windows x64
+      - name: Package Windows x64 (.exe installer)
         run: |
           npm run gulp vscode-win32-x64
           npm run gulp vscode-win32-x64-inno-updater
