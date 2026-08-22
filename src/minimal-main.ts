@@ -16,7 +16,8 @@ async function handleOpenFile(): Promise<void> {
 
 function createWindow(): void {
 	const config = loadConfig();
-	const { x, y, width, height } = config.windowBounds;
+	const display = screen.getPrimaryDisplay().workAreaSize;
+	const { x, y, width, height } = normalizeWindowBounds(config.windowBounds, display);
 
 	mainWindow = new BrowserWindow({
 		x, y, width, height,
@@ -85,6 +86,17 @@ app.whenReady().then(() => {
 	ipcMain.handle('config:load', () => loadConfig());
 	ipcMain.handle('config:save', (_e, partial: Partial<ReturnType<typeof loadConfig>>) => saveConfig(partial));
 	ipcMain.on('editor:openFile', () => { void handleOpenFile(); });
+	if (process.env.MINIMAL_PRODUCTION !== '1') {
+		ipcMain.handle('debug:memory', async () => {
+			const info = await process.getProcessMemoryInfo();
+			return { rssKb: info.residentSet, privateKb: info.private };
+		});
+		ipcMain.handle('debug:openPath', async (_e, filePath: string) => {
+			const data = await fileService.readFileAtPath(filePath);
+			mainWindow?.webContents.send('file:opened', data);
+			return { ok: true, size: data.size };
+		});
+	}
 	createWindow();
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') { app.quit(); } });

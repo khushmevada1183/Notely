@@ -16,6 +16,20 @@ export function detectEOL(content: string): '\n' | '\r\n' {
 	return content.includes('\r\n') ? '\r\n' : '\n';
 }
 
+export async function readFileAtPath(filePath: string): Promise<FileData> {
+	const content = await fs.promises.readFile(filePath, 'utf8');
+	const stat = await fs.promises.stat(filePath);
+	return {
+		path: filePath,
+		name: path.basename(filePath),
+		content,
+		mtime: stat.mtimeMs,
+		size: stat.size,
+		encoding: 'utf-8',
+		eol: detectEOL(content),
+	};
+}
+
 export async function openFile(): Promise<FileData | null> {
 	try {
 		const { dialog } = await import('electron');
