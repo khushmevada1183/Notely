@@ -3,6 +3,7 @@ import './electron-api.d.ts';
 import type { FileData } from './minimal-file-service';
 import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
+import { initSyntaxHighlighting } from './grammar-service';
 import { applySavedTheme, applyTheme } from './theme-service';
 import { showThemeSelector } from './theme-selector';
 
@@ -52,6 +53,7 @@ async function initMinimalEditor(): Promise<void> {
 	await applySavedTheme();
 	setupIpcListeners();
 	setupEditorListeners();
+	void initSyntaxHighlighting(editor);
 }
 
 function setupEditorListeners(): void {
