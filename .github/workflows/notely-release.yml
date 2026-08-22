@@ -21,6 +21,7 @@ jobs:
     env:
       VSCODE_ARCH: x64
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,11 +60,20 @@ jobs:
           npm run gulp vscode-linux-x64-prepare-deb
           npm run gulp vscode-linux-x64-build-deb
 
-      - name: Collect Linux artifacts
+      - name: Collect Linux installer (.deb)
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "$GITHUB_REF_NAME" != v* ]]; then
+            VERSION=$(node -p "require('./package.json').version")
+          fi
           mkdir -p release-artifacts
-          tar -czf release-artifacts/notely-linux-x64.tar.gz -C .. VSCode-linux-x64
-          find .build/linux/deb -name '*.deb' -exec cp {} release-artifacts/ \;
+          DEB=$(find .build/linux/deb -name '*.deb' | head -1)
+          if [ -z "$DEB" ]; then
+            echo "No .deb package found" >&2
+            exit 1
+          fi
+          cp "$DEB" "release-artifacts/notely-${VERSION}-linux-amd64.deb"
+          ls -la release-artifacts/
 
       - uses: actions/upload-artifact@v4
         with:
@@ -80,6 +90,7 @@ jobs:
       NPM_ARCH: arm64
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GYP_DEFINES: kerberos_use_rtld=false
+      GITHUB_REF_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -106,12 +117,26 @@ jobs:
       - name: Package macOS arm64
         run: npm run gulp vscode-darwin-arm64
 
-      - name: Collect macOS artifacts
+      - name: Collect macOS installer (.dmg with Notely.app)
         run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "$GITHUB_REF_NAME" != v* ]]; then
+            VERSION=$(node -p "require('./package.json').version")
+          fi
           mkdir -p release-artifacts
           NOTELY_APP_NAME=$(node -p "require('./product.json').nameLong")
           APP="../VSCode-darwin-arm64/${NOTELY_APP_NAME}.app"
-          ditto -c -k --sequesterRsrc --keepParent "$APP" "release-artifacts/notely-darwin-arm64.zip"
+          if [ ! -d "$APP" ]; then
+            echo "App bundle not found: $APP" >&2
+            ls -la "../VSCode-darwin-arm64/" || true
+            exit 1
+          fi
+          hdiutil create \
+            -volname "Notely" \
+            -srcfolder "$APP" \
+            -ov -format UDZO \
+            "release-artifacts/notely-${VERSION}-mac-arm64.dmg"
+          ls -la release-artifacts/
 
       - uses: actions/upload-artifact@v4
         with:
@@ -127,6 +152,7 @@ jobs:
       VSCODE_ARCH: x64
       NPM_ARCH: x64
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -163,12 +189,21 @@ jobs:
           npm run gulp vscode-win32-x64-inno-updater
           npm run gulp vscode-win32-x64-user-setup
 
-      - name: Collect Windows artifacts
+      - name: Collect Windows installer (.exe)
         shell: pwsh
         run: |
+          $version = $env:GITHUB_REF_NAME
+          if ($version -like 'v*') { $version = $version.Substring(1) }
+          else { $version = node -p "require('./package.json').version" }
           New-Item -ItemType Directory -Force -Path release-artifacts | Out-Null
-          Compress-Archive -Path "../VSCode-win32-x64" -DestinationPath "release-artifacts/notely-win32-x64.zip"
-          Get-ChildItem -Path ".build/win32-x64/user-setup" -Filter "*.exe" | Copy-Item -Destination release-artifacts/
+          $setup = Get-ChildItem -Path ".build/win32-x64/user-setup" -Filter "*.exe" | Select-Object -First 1
+          if (-not $setup) {
+            Write-Error "No setup .exe found under .build/win32-x64/user-setup"
+            Get-ChildItem -Path ".build/win32-x64" -Recurse -Filter "*.exe" | Format-Table FullName
+            exit 1
+          }
+          Copy-Item $setup.FullName "release-artifacts/notely-$version-win-x64-setup.exe"
+          Get-ChildItem release-artifacts
 
       - uses: actions/upload-artifact@v4
         with:
@@ -195,18 +230,14 @@ jobs:
           generate_release_notes: true
           files: release-artifacts/*
           body: |
-            ## Downloads
+            ## Install Notely
 
-            | Platform | File |
-            |----------|------|
-            | Linux x64 (portable) | `notely-linux-x64.tar.gz` |
-            | Linux x64 (Debian/Ubuntu) | `*.deb` |
-            | macOS Apple Silicon | `notely-darwin-arm64.zip` |
-            | Windows x64 (portable) | `notely-win32-x64.zip` |
-            | Windows x64 (installer) | `VSCodeSetup*.exe` |
+            Download the **native installer** for your platform:
 
-            **Linux:** extract the tarball and run `./notely`, or install the `.deb`.
+            | Platform | Installer | What you get |
+            |----------|-----------|--------------|
+            | **Linux** (Debian/Ubuntu) | `notely-*-linux-amd64.deb` | Installs `/usr/bin/notely` and desktop entry — `sudo dpkg -i notely-*-linux-amd64.deb` |
+            | **macOS** (Apple Silicon) | `notely-*-mac-arm64.dmg` | Open DMG → drag **Notely.app** to Applications |
+            | **Windows** (x64) | `notely-*-win-x64-setup.exe` | Double-click installer wizard |
 
-            **macOS:** unzip, then open `Notely.app` (right-click → Open if Gatekeeper blocks it).
-
-            **Windows:** run the setup `.exe` or extract the zip portable build.
+            These are real install packages (not source archives). After install, launch **Notely** from your app menu or Start menu.
