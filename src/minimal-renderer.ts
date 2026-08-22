@@ -7,13 +7,7 @@ import { initSyntaxHighlighting } from './grammar-service';
 import { applySavedTheme, applyTheme } from './theme-service';
 import { showThemeSelector } from './theme-selector';
 
-const EDITOR_CHANNELS = [
-	'editor:openFile',
-	'editor:undo',
-	'editor:redo',
-	'editor:selectAll',
-	'editor:find',
-	'editor:replace',
+const EDITOR_PREFERENCE_CHANNELS = [
 	'editor:toggleWordWrap',
 	'editor:toggleLineNumbers',
 ] as const;
@@ -41,6 +35,19 @@ function loadThemeSelectorStylesheet(): void {
 	document.head.appendChild(link);
 }
 
+function runEditorAction(actionId: string): void {
+	editor.getAction(actionId)?.run();
+}
+
+function setupEditorKeybindings(): void {
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF, () => runEditorAction('actions.find'));
+	if (window.electronAPI.platform === 'darwin') {
+		editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyF, () => runEditorAction('editor.action.startFindReplaceAction'));
+	} else {
+		editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyH, () => runEditorAction('editor.action.startFindReplaceAction'));
+	}
+}
+
 async function initMinimalEditor(): Promise<void> {
 	const container = document.getElementById('container');
 	if (!container) {
@@ -50,6 +57,7 @@ async function initMinimalEditor(): Promise<void> {
 	loadThemeSelectorStylesheet();
 	configureMonacoEnvironment('..');
 	editor = monaco.editor.create(container, getDefaultEditorOptions());
+	setupEditorKeybindings();
 	await applySavedTheme();
 	setupIpcListeners();
 	setupEditorListeners();
@@ -116,7 +124,13 @@ function setupIpcListeners(): void {
 		showThemeSelector((id) => applyTheme(id));
 	});
 
-	for (const channel of EDITOR_CHANNELS) {
+	window.electronAPI.on('editor:find', () => runEditorAction('actions.find'));
+	window.electronAPI.on('editor:replace', () => runEditorAction('editor.action.startFindReplaceAction'));
+	window.electronAPI.on('editor:undo', () => runEditorAction('undo'));
+	window.electronAPI.on('editor:redo', () => runEditorAction('redo'));
+	window.electronAPI.on('editor:selectAll', () => runEditorAction('editor.action.selectAll'));
+
+	for (const channel of EDITOR_PREFERENCE_CHANNELS) {
 		window.electronAPI.on(channel, () => {
 			console.log(channel);
 		});
