@@ -1,5 +1,5 @@
 {
-  "comment": "Extensions to compile/package for Notely. Full compile still builds all; use this for future packaging slice.",
+  "comment": "Extensions packaged by `gulp notely-linux-x64`. Edit themes/grammars/exclude here.",
   "themes": ["theme-*"],
   "grammars": [
     "bat", "coffeescript", "cpp", "csharp", "css", "dart", "diff", "docker",

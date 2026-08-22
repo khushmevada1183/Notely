@@ -18,6 +18,7 @@ import fancyLog from 'fancy-log';
 import ansiColors from 'ansi-colors';
 import * as jsoncParser from 'jsonc-parser';
 import { getProductionDependencies } from './dependencies.ts';
+import { isNotelyPackagedExtension } from './notelyExtensions.ts';
 import { type IExtensionDefinition, getExtensionStream } from './builtInExtensions.ts';
 import { fetchUrls, fetchGithub } from './fetch.ts';
 import { createTsgoStream, spawnTsgo } from './tsgo.ts';
@@ -384,6 +385,13 @@ export function packageNonNativeLocalExtensionsStream(forWeb: boolean, disableMa
 }
 
 /**
+ * Package only theme + grammar extensions listed in minimal-extensions.allowlist.json.
+ */
+export function packageNotelyNonNativeLocalExtensionsStream(forWeb: boolean, disableMangle: boolean): Stream {
+	return doPackageLocalExtensionsStream(forWeb, disableMangle, false, isNotelyPackagedExtension);
+}
+
+/**
  * Package local extensions that are known to have native dependencies. Mutually exclusive to {@link packageNonNativeLocalExtensionsStream}.
  * @note it's possible that the extension does not have native dependencies for the current platform, especially if building for the web,
  * but we simplify the logic here by having a flat list of extensions (See {@link nativeExtensions}) that are known to have native
@@ -414,7 +422,7 @@ export function packageAllLocalExtensionsStream(forWeb: boolean, disableMangle: 
  * @param disableMangle disable the mangler
  * @param native build the extensions that are marked as having native dependencies
  */
-function doPackageLocalExtensionsStream(forWeb: boolean, disableMangle: boolean, native: boolean): Stream {
+function doPackageLocalExtensionsStream(forWeb: boolean, disableMangle: boolean, native: boolean, nameFilter?: (name: string) => boolean): Stream {
 	const nativeExtensionsSet = new Set(nativeExtensions);
 	const localExtensionsDescriptions = (
 		(glob.sync('extensions/*/package.json') as string[])
@@ -427,6 +435,7 @@ function doPackageLocalExtensionsStream(forWeb: boolean, disableMangle: boolean,
 			.filter(({ name }) => native ? nativeExtensionsSet.has(name) : !nativeExtensionsSet.has(name))
 			.filter(({ name }) => excludedExtensions.indexOf(name) === -1)
 			.filter(({ name }) => builtInExtensions.every(b => b.name !== name))
+			.filter(({ name }) => !nameFilter || nameFilter(name))
 			.filter(({ manifestPath }) => (forWeb ? isWebExtension(require(manifestPath)) : true))
 	);
 

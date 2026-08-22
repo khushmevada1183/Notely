@@ -43,15 +43,14 @@ jobs:
             libkrb5-dev \
             libgbm1 \
             libgtk-3-0 \
-            fakeroot \
-            rpm
+            fakeroot
 
       - name: Install Node dependencies
         run: npm ci
 
       - name: Package Linux x64 (.deb installer)
         run: |
-          npm run gulp vscode-linux-x64
+          npm run gulp notely-linux-x64
           npm run gulp vscode-linux-x64-prepare-deb
           npm run gulp vscode-linux-x64-build-deb
 
@@ -107,7 +106,7 @@ jobs:
           npm_config_arch: ${{ env.NPM_ARCH }}
 
       - name: Package macOS arm64 (.dmg installer)
-        run: npm run gulp vscode-darwin-arm64
+        run: npm run gulp notely-darwin-arm64
 
       - name: Collect macOS installer (.dmg with Notely.app)
         run: |
@@ -173,7 +172,7 @@ jobs:
 
       - name: Package Windows x64 (.exe installer)
         run: |
-          npm run gulp vscode-win32-x64
+          npm run gulp notely-win32-x64
           npm run gulp vscode-win32-x64-inno-updater
           npm run gulp vscode-win32-x64-user-setup
 
@@ -187,7 +186,6 @@ jobs:
           $setup = Get-ChildItem -Path ".build/win32-x64/user-setup" -Filter "*.exe" | Select-Object -First 1
           if (-not $setup) {
             Write-Error "No setup .exe found under .build/win32-x64/user-setup"
-            Get-ChildItem -Path ".build/win32-x64" -Recurse -Filter "*.exe" | Format-Table FullName
             exit 1
           }
           Copy-Item $setup.FullName "release-artifacts/notely-$version-win-x64-setup.exe"
@@ -202,6 +200,11 @@ jobs:
   release:
     name: Publish GitHub Release
     needs: [linux-x64, darwin-arm64, win32-x64]
+    if: |
+      always() &&
+      needs.linux-x64.result == 'success' &&
+      needs.darwin-arm64.result == 'success' &&
+      needs.win32-x64.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -220,12 +223,10 @@ jobs:
           body: |
             ## Install Notely
 
-            Download the **native installer** for your platform:
+            Three platform installers built in parallel (lean `notely-*` gulp targets):
 
-            | Platform | Installer | What you get |
-            |----------|-----------|--------------|
-            | **Linux** (Debian/Ubuntu) | `notely-*-linux-amd64.deb` | Installs `/usr/bin/notely` and desktop entry — `sudo dpkg -i notely-*-linux-amd64.deb` |
-            | **macOS** (Apple Silicon) | `notely-*-mac-arm64.dmg` | Open DMG → drag **Notely.app** to Applications |
-            | **Windows** (x64) | `notely-*-win-x64-setup.exe` | Double-click installer wizard |
-
-            These are real install packages (not source archives). After install, launch **Notely** from your app menu or Start menu.
+            | Platform | Installer |
+            |----------|-----------|
+            | **Linux** (Debian/Ubuntu) | `notely-*-linux-amd64.deb` — `sudo dpkg -i notely-*-linux-amd64.deb` |
+            | **macOS** (Apple Silicon) | `notely-*-mac-arm64.dmg` |
+            | **Windows** (x64) | `notely-*-win-x64-setup.exe` |

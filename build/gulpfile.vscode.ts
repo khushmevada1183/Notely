@@ -26,7 +26,7 @@ import { config } from './lib/electron.ts';
 import { createAsar } from './lib/asar.ts';
 import minimist from 'minimist';
 import { compileBuildWithoutManglingTask, compileBuildWithManglingTask } from './gulpfile.compile.ts';
-import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask } from './gulpfile.extensions.ts';
+import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask, compileNotelyExtensionsBuildTask } from './gulpfile.extensions.ts';
 import { copyCodiconsTask } from './lib/compilation.ts';
 import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
 import { ensureOSProxyResolverPlatformPackage, getOSProxyResolverExcludeFilter, getOSProxyResolverPlatformFiles } from './lib/osProxyResolver.ts';
@@ -762,6 +762,42 @@ BUILD_TARGETS.forEach(buildTarget => {
 		task.task(task.define('vscode-min', task.series(vscodeMin)));
 	}
 });
+
+// Notely: lean release targets — allowlisted extensions only, no native extension extras.
+if (product.applicationName === 'notely') {
+	function defineNotelyPlatformTask(platform: string, arch: string, destinationFolderName: string): void {
+		const sourceFolderName = 'out-vscode';
+		const dashed = (str: string) => (str ? `-${str}` : '');
+		const taskName = `notely${dashed(platform)}${dashed(arch)}`;
+
+		const notelyPackageCI = task.define(`${taskName}-ci`, task.series(
+			util.rimraf(path.join(buildRoot, destinationFolderName)),
+			packageTask(platform, arch, sourceFolderName, destinationFolderName)
+		));
+		task.task(notelyPackageCI);
+
+		const notelyEsbuildBundle = task.define(`esbuild-bundle-${taskName}`, () => runEsbuildBundle(
+			sourceFolderName,
+			false,
+			true,
+			'desktop',
+			useCdnSourceMapsForPackagingTasks ? `${sourceMappingURLBase}/core` : undefined
+		));
+
+		const notelyPlatformTask = task.define(taskName, task.series(
+			copyCodiconsTask,
+			compileNotelyExtensionsBuildTask,
+			writeISODate('out-build'),
+			notelyEsbuildBundle,
+			notelyPackageCI
+		));
+		task.task(notelyPlatformTask);
+	}
+
+	defineNotelyPlatformTask('linux', 'x64', 'VSCode-linux-x64');
+	defineNotelyPlatformTask('darwin', 'arm64', 'VSCode-darwin-arm64');
+	defineNotelyPlatformTask('win32', 'x64', 'VSCode-win32-x64');
+}
 
 // #region nls
 

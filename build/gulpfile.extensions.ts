@@ -277,6 +277,16 @@ export const compileNonNativeExtensionsBuildTask = task.define('compile-non-nati
 task.task(compileNonNativeExtensionsBuildTask);
 
 /**
+ * Compiles only Notely allowlisted extensions (themes + grammars).
+ * Skips git, language servers, terminal, debug, and other VS Code extensions.
+ */
+export const compileNotelyExtensionsBuildTask = task.define('compile-notely-extensions-build', task.series(
+	cleanExtensionsBuildTask,
+	task.define('bundle-notely-extensions-build', () => ext.packageNotelyNonNativeLocalExtensionsStream(false, false).pipe(gulp.dest('.build')))
+));
+task.task(compileNotelyExtensionsBuildTask);
+
+/**
  * Compiles the native extensions for the build
  * @note this does not clean the directory ahead of it. See {@link cleanExtensionsBuildTask} for that.
  */
