@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { detectEOL } from '../../minimal-file-service.js';
+import { detectEOL } from '../../src/minimal-file-service';
 
 suite('minimal-file-service', () => {
 	test('detectEOL finds CRLF', () => {

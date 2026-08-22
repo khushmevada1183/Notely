@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { getDefaultConfig } from '../../minimal-config.js';
+import { getDefaultConfig } from '../../src/minimal-config';
 
 suite('minimal-config', () => {
 	test('getDefaultConfig returns vs-dark theme', () => {

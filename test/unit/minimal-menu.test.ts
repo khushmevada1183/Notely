@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { getCommandKey } from '../../minimal-menu.js';
+import { getCommandKey } from '../../src/minimal-menu';
 
 suite('minimal-menu', () => {
 	test('getCommandKey is Cmd on darwin', () => {

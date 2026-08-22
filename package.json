@@ -97,6 +97,7 @@
     "minimal:deps-test": "node build/test-minimal-deps.cjs",
     "minimal:validate": "node build/validate-minimal-config.cjs",
     "minimal:test-config": "node build/test-minimal-config.cjs",
+    "minimal:test-unit": "node build/run-minimal-unit-tests.cjs",
     "minimal:clean": "rimraf out-minimal dist-minimal",
     "minimal:compile": "node build/run-gulp-minimal.cjs compile-minimal",
     "minimal:copy-resources": "node build/run-gulp-minimal.cjs copy-minimal-resources",
