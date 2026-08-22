@@ -5,10 +5,7 @@ import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
 
 const EDITOR_CHANNELS = [
-	'editor:newFile',
 	'editor:openFile',
-	'editor:saveFile',
-	'editor:saveFileAs',
 	'editor:undo',
 	'editor:redo',
 	'editor:selectAll',
@@ -55,6 +52,41 @@ function setupEditorListeners(): void {
 	});
 }
 
+async function saveFile(): Promise<void> {
+	const content = editor.getValue();
+	if (!currentFile?.path) {
+		await saveFileAs();
+		return;
+	}
+	const result = await window.electronAPI.invoke('file:save', { path: currentFile.path, content }) as { success: boolean; mtime: number; size: number };
+	if (result.success) {
+		currentFile.mtime = result.mtime;
+		currentFile.size = result.size;
+		isDirty = false;
+		updateWindowTitle();
+		window.electronAPI.send('editor:dirty', false);
+	}
+}
+
+async function saveFileAs(): Promise<void> {
+	const content = editor.getValue();
+	const data = await window.electronAPI.invoke('file:saveAs', { content }) as FileData | null;
+	if (!data) {
+		return;
+	}
+	currentFile = data;
+	isDirty = false;
+	updateWindowTitle();
+}
+
+function newFile(): void {
+	currentFile = null;
+	editor.setValue('');
+	monaco.editor.setModelLanguage(editor.getModel()!, 'plaintext');
+	isDirty = false;
+	updateWindowTitle();
+}
+
 function setupIpcListeners(): void {
 	window.electronAPI.on('file:opened', (data) => {
 		const file = data as FileData;
@@ -64,6 +96,10 @@ function setupIpcListeners(): void {
 		isDirty = false;
 		updateWindowTitle();
 	});
+
+	window.electronAPI.on('editor:saveFile', () => { void saveFile(); });
+	window.electronAPI.on('editor:saveFileAs', () => { void saveFileAs(); });
+	window.electronAPI.on('editor:newFile', () => newFile());
 
 	for (const channel of EDITOR_CHANNELS) {
 		window.electronAPI.on(channel, () => {
