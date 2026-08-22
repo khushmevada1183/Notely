@@ -88,6 +88,7 @@ const copyMinimalResourcesTask = task.define('copy-minimal-resources', () => {
 	const resourcesSrc = path.join(root, 'resources');
 	const resourcesDest = path.join(outDir, 'resources');
 	if (fs.existsSync(resourcesSrc)) {
+		// includes resources/themes/ (run scripts/extract-themes.js to populate)
 		fs.cpSync(resourcesSrc, resourcesDest, { recursive: true });
 	}
 	const monacoWorkers = path.join(getMonacoEditorRoot(), 'min', 'vs');
