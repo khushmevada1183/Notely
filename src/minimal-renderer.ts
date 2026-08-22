@@ -1,16 +1,13 @@
 import * as monaco from 'monaco-editor';
 import './electron-api.d.ts';
 import type { FileData } from './minimal-file-service';
+import type { IMinimalConfiguration } from './minimal-config';
 import { detectLanguage } from './language-detection';
 import { configureMonacoEnvironment, getDefaultEditorOptions } from './monaco-config';
+import { toggleValue } from './editor-preferences';
 import { initSyntaxHighlighting } from './grammar-service';
 import { applySavedTheme, applyTheme } from './theme-service';
 import { showThemeSelector } from './theme-selector';
-
-const EDITOR_PREFERENCE_CHANNELS = [
-	'editor:toggleWordWrap',
-	'editor:toggleLineNumbers',
-] as const;
 
 let editor: monaco.editor.IStandaloneCodeEditor;
 let currentFile: FileData | null = null;
@@ -48,6 +45,31 @@ function setupEditorKeybindings(): void {
 	}
 }
 
+async function applyConfigToEditor(): Promise<void> {
+	const cfg = await window.electronAPI.invoke('config:load') as IMinimalConfiguration;
+	editor.updateOptions({
+		wordWrap: cfg.wordWrap,
+		lineNumbers: cfg.lineNumbers,
+		fontSize: cfg.fontSize,
+		tabSize: cfg.tabSize,
+		insertSpaces: cfg.insertSpaces,
+	});
+}
+
+function toggleWordWrap(): void {
+	const current = editor.getOption(monaco.editor.EditorOption.wordWrap);
+	const next = toggleValue(current === 'on' ? 'on' : 'off');
+	editor.updateOptions({ wordWrap: next });
+	void window.electronAPI.invoke('config:save', { wordWrap: next });
+}
+
+function toggleLineNumbers(): void {
+	const current = editor.getOption(monaco.editor.EditorOption.lineNumbers);
+	const next = toggleValue(current === 'on' ? 'on' : 'off');
+	editor.updateOptions({ lineNumbers: next });
+	void window.electronAPI.invoke('config:save', { lineNumbers: next });
+}
+
 async function initMinimalEditor(): Promise<void> {
 	const container = document.getElementById('container');
 	if (!container) {
@@ -59,6 +81,7 @@ async function initMinimalEditor(): Promise<void> {
 	editor = monaco.editor.create(container, getDefaultEditorOptions());
 	setupEditorKeybindings();
 	await applySavedTheme();
+	await applyConfigToEditor();
 	setupIpcListeners();
 	setupEditorListeners();
 	void initSyntaxHighlighting(editor);
@@ -129,12 +152,8 @@ function setupIpcListeners(): void {
 	window.electronAPI.on('editor:undo', () => runEditorAction('undo'));
 	window.electronAPI.on('editor:redo', () => runEditorAction('redo'));
 	window.electronAPI.on('editor:selectAll', () => runEditorAction('editor.action.selectAll'));
-
-	for (const channel of EDITOR_PREFERENCE_CHANNELS) {
-		window.electronAPI.on(channel, () => {
-			console.log(channel);
-		});
-	}
+	window.electronAPI.on('editor:toggleWordWrap', toggleWordWrap);
+	window.electronAPI.on('editor:toggleLineNumbers', toggleLineNumbers);
 }
 
 document.addEventListener('DOMContentLoaded', () => { void initMinimalEditor(); });
