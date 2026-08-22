@@ -17,7 +17,7 @@ mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/notely-live.log"
 PID_FILE="$LOG_DIR/notely.pid"
 STAMP="$(date +%Y%m%d-%H%M%S)"
-VSCODE_LOG_DIR="$LOG_DIR/vscode-$STAMP"
+NOTELY_LOG_DIR="$LOG_DIR/notely-$STAMP"
 
 # Fresh log each launch; previous run archived if non-empty
 if [[ -s "$LOG_FILE" ]]; then
@@ -34,13 +34,13 @@ node --experimental-strip-types build/lib/preLaunch.ts
 export NODE_ENV=development VSCODE_DEV=1 VSCODE_CLI=1
 export ELECTRON_ENABLE_STACK_DUMPING=1 ELECTRON_ENABLE_LOGGING=1
 
-ARGS=(. --disable-extension=vscode.vscode-api-tests --no-sandbox --log trace --logsPath "$VSCODE_LOG_DIR")
+ARGS=(. --disable-extension=vscode.vscode-api-tests --no-sandbox --log trace --logsPath "$NOTELY_LOG_DIR")
 FOREGROUND=false
 [[ "${1:-}" == "--fg" ]] && { FOREGROUND=true; shift; }
 ARGS+=("$@")
 
 echo "Notely live log : $LOG_FILE"
-echo "VS Code log dir : $VSCODE_LOG_DIR"
+echo "Notely log dir  : $NOTELY_LOG_DIR"
 echo "Tail errors     : tail -f $LOG_FILE"
 echo "Filter errors   : grep -i err $LOG_FILE"
 echo "---"

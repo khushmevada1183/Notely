@@ -43,9 +43,9 @@ export function getUserDataPath(cliArgs: NativeParsedArgs, productName: string):
 
 function doGetUserDataPath(cliArgs: NativeParsedArgs, productName: string): string {
 
-	// 0. Running out of sources has a fixed productName
+	// 0. Running out of sources: suffix dev user-data folder (e.g. notely-dev)
 	if (process.env['VSCODE_DEV']) {
-		productName = 'code-oss-dev';
+		productName = `${productName}-dev`;
 	}
 
 	// 1. Support portable mode

@@ -62,30 +62,15 @@ else {
 	if (Object.keys(product).length === 0) {
 		Object.assign(product, {
 			version: '1.104.0-dev',
-			nameShort: 'Code - OSS Dev',
-			nameLong: 'Code - OSS Dev',
-			applicationName: 'code-oss',
-			dataFolderName: '.vscode-oss',
-			urlProtocol: 'code-oss',
-			reportIssueUrl: 'https://github.com/microsoft/vscode/issues/new',
+			nameShort: 'Notely Dev',
+			nameLong: 'Notely Dev',
+			applicationName: 'notely',
+			dataFolderName: '.notely',
+			urlProtocol: 'notely',
+			reportIssueUrl: 'https://github.com/khushmevada1183/Notely/issues/new',
 			licenseName: 'MIT',
 			licenseUrl: 'https://github.com/microsoft/vscode/blob/main/LICENSE.txt',
-			serverLicenseUrl: 'https://github.com/microsoft/vscode/blob/main/LICENSE.txt',
-			defaultChatAgent: {
-				extensionId: 'GitHub.copilot',
-				chatExtensionId: 'GitHub.copilot-chat',
-				provider: {
-					default: {
-						id: 'github',
-						name: 'GitHub',
-					},
-					enterprise: {
-						id: 'github-enterprise',
-						name: 'GitHub Enterprise',
-					}
-				},
-				providerScopes: []
-			}
+			serverLicenseUrl: 'https://github.com/microsoft/vscode/blob/main/LICENSE.txt'
 		});
 	}
 }
