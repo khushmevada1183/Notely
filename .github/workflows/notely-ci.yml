@@ -1,0 +1,52 @@
+name: Notely CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notely-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-compile:
+    name: Linux compile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libx11-dev \
+            libxkbfile-dev \
+            libsecret-1-dev \
+            libkrb5-dev \
+            libgbm1 \
+            libgtk-3-0
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Compile Notely workbench
+        run: npm run compile-client
