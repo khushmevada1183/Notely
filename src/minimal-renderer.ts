@@ -154,6 +154,15 @@ function setupIpcListeners(): void {
 	window.electronAPI.on('editor:selectAll', () => runEditorAction('editor.action.selectAll'));
 	window.electronAPI.on('editor:toggleWordWrap', toggleWordWrap);
 	window.electronAPI.on('editor:toggleLineNumbers', toggleLineNumbers);
+
+	window.electronAPI.on('editor:saveAndClose', async () => {
+		await saveFile();
+		if (isDirty) {
+			return;
+		}
+		window.electronAPI.send('editor:dirty', false);
+		window.electronAPI.send('window:force-close');
+	});
 }
 
 document.addEventListener('DOMContentLoaded', () => { void initMinimalEditor(); });
