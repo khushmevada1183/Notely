@@ -101,39 +101,43 @@ async function wireTmGrammars(
 }
 
 export async function initSyntaxHighlighting(editor: monaco.editor.IStandaloneCodeEditor): Promise<void> {
-	if (!wasmLoaded) {
-		const resp = await fetch(`${GRAMMARS_BASE}onigasm.wasm`);
-		if (!resp.ok) {
-			throw new Error(`Failed to load onigasm.wasm: ${resp.status}`);
-		}
-		await loadWASM(await resp.arrayBuffer());
-		wasmLoaded = true;
-	}
-
-	const manifestResp = await fetch(`${GRAMMARS_BASE}manifest.json`);
-	if (!manifestResp.ok) {
-		throw new Error(`Failed to load grammar manifest: ${manifestResp.status}`);
-	}
-	const manifest = await manifestResp.json() as GrammarManifestEntry[];
-	const availableScopes = new Set(manifest.map(entry => entry.scopeName));
-
-	const registry = new Registry({
-		getGrammarDefinition: async (scopeName: string, _dependentScope: string) => {
-			const entry = manifest.find(m => m.scopeName === scopeName);
-			if (!entry) {
-				return { format: 'json' as const, content: '{}' };
+	try {
+		if (!wasmLoaded) {
+			const resp = await fetch(`${GRAMMARS_BASE}onigasm.wasm`);
+			if (!resp.ok) {
+				throw new Error(`Failed to load onigasm.wasm: ${resp.status}`);
 			}
-			const grammarResp = await fetch(`${GRAMMARS_BASE}${entry.file}`);
-			return { format: 'json' as const, content: await grammarResp.text() };
-		},
-	});
-
-	const languages = new Map<string, string>();
-	for (const [languageId, scopeName] of Object.entries(LANGUAGE_TO_SCOPE)) {
-		if (availableScopes.has(scopeName)) {
-			languages.set(languageId, scopeName);
+			await loadWASM(await resp.arrayBuffer());
+			wasmLoaded = true;
 		}
-	}
 
-	await wireTmGrammars(monaco, registry, languages, editor);
+		const manifestResp = await fetch(`${GRAMMARS_BASE}manifest.json`);
+		if (!manifestResp.ok) {
+			throw new Error(`Failed to load grammar manifest: ${manifestResp.status}`);
+		}
+		const manifest = await manifestResp.json() as GrammarManifestEntry[];
+		const availableScopes = new Set(manifest.map(entry => entry.scopeName));
+
+		const registry = new Registry({
+			getGrammarDefinition: async (scopeName: string, _dependentScope: string) => {
+				const entry = manifest.find(m => m.scopeName === scopeName);
+				if (!entry) {
+					return { format: 'json' as const, content: '{}' };
+				}
+				const grammarResp = await fetch(`${GRAMMARS_BASE}${entry.file}`);
+				return { format: 'json' as const, content: await grammarResp.text() };
+			},
+		});
+
+		const languages = new Map<string, string>();
+		for (const [languageId, scopeName] of Object.entries(LANGUAGE_TO_SCOPE)) {
+			if (availableScopes.has(scopeName)) {
+				languages.set(languageId, scopeName);
+			}
+		}
+
+		await wireTmGrammars(monaco, registry, languages, editor);
+	} catch (err) {
+		console.warn('TextMate syntax highlighting unavailable:', err);
+	}
 }

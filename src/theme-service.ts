@@ -124,11 +124,15 @@ export function applyTheme(themeId: string): void {
 }
 
 export async function applySavedTheme(): Promise<void> {
-	await loadThemes();
-	const { theme } = await loadRendererConfig();
-	if (themes.some(t => t.id === theme)) {
-		applyTheme(theme);
-		return;
+	try {
+		await loadThemes();
+		const { theme } = await loadRendererConfig();
+		if (themes.some(t => t.id === theme)) {
+			applyTheme(theme);
+			return;
+		}
+	} catch (err) {
+		console.warn('Failed to load themes:', err);
 	}
 	monaco.editor.setTheme('vs-dark');
 }
