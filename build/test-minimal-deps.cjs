@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const pkg = require('../package-minimal.json');
+const pkg = require('../package.json');
 const depCount = Object.keys(pkg.dependencies || {}).length;
 const devCount = Object.keys(pkg.devDependencies || {}).length;
 const total = depCount + devCount;

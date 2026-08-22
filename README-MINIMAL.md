@@ -1,6 +1,8 @@
 # Minimal Editor
 
-A lightweight, cross-platform text editor derived from VS Code. Minimal Editor keeps the Monaco editing experience and syntax highlighting while removing everything else — no extensions, Git, terminal, debugger, or workspace complexity.
+A lightweight, cross-platform text editor (Monaco + Electron). **This repository is the Minimal Editor app only** — the full VS Code workbench, extension tree, and server entrypoints have been removed. What remains is the minimal source under `src/minimal-*.ts`, vendored themes/grammars in `resources/`, and the `minimal:*` / `package-minimal:*` build scripts.
+
+No extensions, Git, terminal, debugger, or workspace complexity.
 
 ## Features
 

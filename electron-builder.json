@@ -13,7 +13,7 @@
   ],
   "extraMetadata": {
     "name": "minimal-editor",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "main": "minimal-main.js"
   },
   "mac": {

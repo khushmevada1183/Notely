@@ -28,12 +28,6 @@
 	},
 	"include": [
 		"./*.ts",
-		"./typings",
-		"./vs/**/*.ts",
-		"./vscode-dts/vscode.proposed.*.d.ts",
-		"./vscode-dts/vscode.d.ts"
+		"./typings"
 	],
-	"exclude": [
-		"vs/workbench/contrib/webview/browser/pre/service-worker.js"
-	]
 }
