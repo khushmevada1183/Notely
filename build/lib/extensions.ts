@@ -646,13 +646,22 @@ const esbuildMediaScripts: { script: string; tsconfig: string }[] = [
 	{ script: 'simple-browser/esbuild.webview.mts', tsconfig: 'simple-browser/preview-src/tsconfig.json' },
 ];
 
+function getActiveEsbuildMediaScripts(): { script: string; tsconfig: string }[] {
+	return esbuildMediaScripts.filter(({ script }) => fs.existsSync(path.join(extensionsPath, script)));
+}
+
 export function buildExtensionMedia(isWatch: boolean, outputRoot?: string): Promise<void> {
-	const esbuildTask = esbuildExtensions('esbuilding extension media', isWatch, esbuildMediaScripts.map(({ script }) => ({
+	const activeScripts = getActiveEsbuildMediaScripts();
+	if (activeScripts.length === 0) {
+		return Promise.resolve();
+	}
+
+	const esbuildTask = esbuildExtensions('esbuilding extension media', isWatch, activeScripts.map(({ script }) => ({
 		script: path.join(extensionsPath, script),
 		outputRoot: outputRoot ? path.join(root, outputRoot, path.dirname(script)) : undefined
 	})));
 
-	const typeCheckTasks = esbuildMediaScripts.map(({ tsconfig }) => {
+	const typeCheckTasks = activeScripts.map(({ tsconfig }) => {
 		const tsconfigPath = path.join(extensionsPath, tsconfig);
 		const config = { taskName: 'typechecking extension media (tsgo)', noEmit: true };
 		if (!isWatch) {

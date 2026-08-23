@@ -18,6 +18,7 @@ import product from '../../product.json' with { type: 'json' };
 import packageJson from '../../package.json' with { type: 'json' };
 import { useEsbuildTranspile } from '../buildConfig.ts';
 import { isWebExtension, type IScannedBuiltinExtension } from '../lib/extensions.ts';
+import { NOTELY_EXCLUDED_DESKTOP_ENTRIES } from '../lib/notelyDirs.ts';
 
 const globAsync = promisify(glob);
 
@@ -157,14 +158,19 @@ const bootstrapEntryPointsServer = [
  * Get entry points for a build target.
  */
 function getEntryPointsForTarget(target: BuildTarget): string[] {
+	const filterNotelyDesktop = (entries: string[]) =>
+		product.applicationName === 'notely'
+			? entries.filter(e => !NOTELY_EXCLUDED_DESKTOP_ENTRIES.includes(e))
+			: entries;
+
 	switch (target) {
 		case 'desktop':
-			return [
+			return filterNotelyDesktop([
 				...workerEntryPoints,
 				...desktopWorkerEntryPoints,
 				...desktopEntryPoints,
 				...codeEntryPoints,
-			];
+			]);
 		case 'server':
 			return [
 				...serverEntryPoints,
@@ -211,12 +217,19 @@ function getBootstrapEntryPointsForTarget(target: BuildTarget): string[] {
 function getCssBundleEntryPointsForTarget(target: BuildTarget): Set<string> {
 	switch (target) {
 		case 'desktop':
-			return new Set([
-				'vs/workbench/workbench.desktop.main',
-				'vs/code/electron-browser/workbench/workbench',
-				'vs/sessions/sessions.desktop.main',
-				'vs/sessions/electron-browser/sessions',
-			]);
+			return new Set(
+				product.applicationName === 'notely'
+					? [
+						'vs/workbench/workbench.desktop.main',
+						'vs/code/electron-browser/workbench/workbench',
+					]
+					: [
+						'vs/workbench/workbench.desktop.main',
+						'vs/code/electron-browser/workbench/workbench',
+						'vs/sessions/sessions.desktop.main',
+						'vs/sessions/electron-browser/sessions',
+					]
+			);
 		case 'server':
 			return new Set(); // Server has no UI
 		case 'server-web':

@@ -9,6 +9,7 @@ import es from 'event-stream';
 import fancyLog from 'fancy-log';
 import { createRequire } from 'module';
 import * as path from 'path';
+import product from '../../product.json' with { type: 'json' };
 
 const root = path.dirname(path.dirname(import.meta.dirname));
 const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
@@ -25,16 +26,24 @@ const timestampRegex = /^\[\d{2}:\d{2}:\d{2}\]\s*/;
 const ts7TscPath = path.join(path.dirname(createRequire(import.meta.url).resolve('@typescript/native/package.json')), 'bin', 'tsc');
 
 export function spawnTsgo(projectPath: string, config: { taskName: string; noEmit?: boolean }, onComplete?: () => Promise<void> | void): Promise<void> {
+	// TS7 resolves exclude globs relative to tsconfig dir; absolute --project paths break excludes (Notely).
+	const normalizedProjectPath = product.applicationName === 'notely'
+		? path.relative(root, projectPath)
+		: projectPath;
+
 	function runReporter(output: string) {
 		const lines = (output || '').split('\n');
 		const errorLines = lines.filter(line => /error \w+:/.test(line));
-		fancyLog(`Finished ${ansiColors.green(config.taskName)} ${projectPath} with ${errorLines.length} errors.`);
+		fancyLog(`Finished ${ansiColors.green(config.taskName)} ${normalizedProjectPath} with ${errorLines.length} errors.`);
 		for (const line of errorLines) {
 			fancyLog(line);
 		}
 	}
 
-	const args = [ts7TscPath, '--project', projectPath, '--pretty', 'false', '--incremental'];
+	const args = [ts7TscPath, '--project', normalizedProjectPath, '--pretty', 'false'];
+	if (config.noEmit && product.applicationName !== 'notely') {
+		args.push('--incremental');
+	}
 	if (config.noEmit) {
 		args.push('--noEmit');
 	} else {

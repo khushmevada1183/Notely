@@ -29,6 +29,8 @@ import { extHostNamedCustomer, IExtHostContext, IInternalExtHostContext } from '
 import { Dto } from '../../services/extensions/common/proxyIdentifier.js';
 import { IHostService } from '../../services/host/browser/host.js';
 import { ITimerService } from '../../services/timer/browser/timerService.js';
+import product from '../../../platform/product/common/product.js';
+import { NOTELY_MAIN_CONTEXT_IDENTIFIERS } from '../../contrib/minimalEditor/browser/notelyMainContext.js';
 
 @extHostNamedCustomer(MainContext.MainThreadExtensionService)
 export class MainThreadExtensionService implements MainThreadExtensionServiceShape {
@@ -55,7 +57,10 @@ export class MainThreadExtensionService implements MainThreadExtensionServiceSha
 			new ExtensionHostProxy(extHostContext.getProxy(ExtHostContext.ExtHostExtensionService))
 		);
 		// eslint-disable-next-line local/code-no-any-casts, @typescript-eslint/no-explicit-any
-		internalExtHostContext._setAllMainProxyIdentifiers(Object.keys(MainContext).map((key) => (<any>MainContext)[key]));
+		const mainProxyIdentifiers = product.applicationName === 'notely'
+			? NOTELY_MAIN_CONTEXT_IDENTIFIERS
+			: Object.keys(MainContext).map((key) => (<any>MainContext)[key]);
+		internalExtHostContext._setAllMainProxyIdentifiers(mainProxyIdentifiers);
 	}
 
 	public dispose(): void {

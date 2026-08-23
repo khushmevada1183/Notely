@@ -22,6 +22,8 @@ import * as tsb from './lib/tsb/index.ts';
 import { createTsgoStream, spawnTsgo } from './lib/tsgo.ts';
 import * as util from './lib/util.ts';
 import watcher from './lib/watch/index.ts';
+import product from '../product.json' with { type: 'json' };
+import { getNotelyExtensionCompilations } from './lib/notelyDirs.ts';
 
 const root = path.dirname(import.meta.dirname);
 const commit = getVersion(root);
@@ -50,7 +52,7 @@ function onExtensionCompilationEnd(): void {
 // 	cwd: extensionsPath,
 // 	ignore: ['**/out/**', '**/node_modules/**']
 // });
-const compilations = [
+const upstreamCompilations = [
 	'extensions/configuration-editing/tsconfig.json',
 	'extensions/css-language-features/client/tsconfig.json',
 	'extensions/css-language-features/server/tsconfig.json',
@@ -96,6 +98,10 @@ const compilations = [
 	'.vscode/extensions/vscode-extras/tsconfig.json',
 	'.vscode/extensions/vscode-pr-pinger/tsconfig.json',
 ];
+
+const compilations = product.applicationName === 'notely'
+	? getNotelyExtensionCompilations()
+	: upstreamCompilations;
 
 const getBaseUrl = (out: string) => `https://main.vscode-cdn.net/sourcemaps/${commit}/${out}`;
 
@@ -232,14 +238,20 @@ const tasks = compilations.map(function (tsconfigFile) {
 	return { transpileTask, compileTask, watchTask };
 });
 
-const transpileExtensionsTask = task.define('transpile-extensions', task.parallel(...tasks.map(t => t.transpileTask)));
-task.task(transpileExtensionsTask);
+function defineExtensionsAggregateTask(name: string, pick: (t: typeof tasks[number]) => task.Task): task.Task {
+	if (tasks.length === 0) {
+		const noop = task.define(name, () => Promise.resolve());
+		task.task(noop);
+		return noop;
+	}
+	const aggregate = task.define(name, task.parallel(...tasks.map(pick)));
+	task.task(aggregate);
+	return aggregate;
+}
 
-export const compileExtensionsTask = task.define('compile-extensions', task.parallel(...tasks.map(t => t.compileTask)));
-task.task(compileExtensionsTask);
-
-export const watchExtensionsTask = task.define('watch-extensions', task.parallel(...tasks.map(t => t.watchTask)));
-task.task(watchExtensionsTask);
+const transpileExtensionsTask = defineExtensionsAggregateTask('transpile-extensions', t => t.transpileTask);
+export const compileExtensionsTask = defineExtensionsAggregateTask('compile-extensions', t => t.compileTask);
+export const watchExtensionsTask = defineExtensionsAggregateTask('watch-extensions', t => t.watchTask);
 
 //#region Extension media
 

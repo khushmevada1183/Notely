@@ -6,7 +6,7 @@
 import { URI } from '../../../../base/common/uri.js';
 import { IReference } from '../../../../base/common/lifecycle.js';
 import { InstantiationType, registerSingleton } from '../../../../platform/instantiation/common/extensions.js';
-import { IQuickDiffModelService, QuickDiffModel, QuickDiffModelOptions } from '../../scm/browser/quickDiffModel.js';
+import { IQuickDiffModelService, QuickDiffModel, QuickDiffModelOptions } from './quickDiffModel.js';
 
 class NullQuickDiffModelService implements IQuickDiffModelService {
 	declare _serviceBrand: undefined;

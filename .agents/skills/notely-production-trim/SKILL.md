@@ -37,7 +37,20 @@ Register `nullChatEntitlementService.ts` when no `defaultChatAgent` — avoids C
 
 ## Package garbage (Notely installers)
 
-`build/lib/notelyPackage.ts` + `build/.moduleignore.notely` strip AI npm packages and unused `out/` (chat, agentHost, mcp, sessions) from `notely-*` gulp targets only. Repo still carries upstream Copilot source for fork sync.
+`build/lib/notelyPackage.ts` + `build/.moduleignore.notely` strip AI npm packages and unused `out/` (chat, agentHost, mcp, sessions) from `notely-*` gulp targets only.
+
+## Repo trim (dev disk + compile time)
+
+| Target | Mechanism |
+|--------|-----------|
+| Extension folders (~3.8GB) | `./scripts/notely-trim-extensions.sh` — keeps `build/minimal-extensions.allowlist.json` only |
+| npm postinstall | `build/npm/dirs.ts` → `getNotelyNpmDirs()` skips remote/copilot/extension subdirs |
+| Extension compile | `build/gulpfile.extensions.ts` → empty compilations for Notely |
+| Esbuild desktop bundle | `build/lib/notelyDirs.ts` → `NOTELY_EXCLUDED_DESKTOP_ENTRIES` |
+| Agent host process | `app.ts` skips when `product.applicationName === 'notely'` |
+| Default scripts | `package.json` — no `compile-copilot` / `watch-copilot` in compile/watch |
+
+**Do not yet:** remove AI deps from root `package.json` or delete `src/vs/workbench/contrib/chat` — breaks upstream compile until a Notely-only tsconfig exists.
 
 ## Stubs Over Re-imports
 

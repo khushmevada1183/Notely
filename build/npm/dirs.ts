@@ -4,11 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { existsSync } from 'fs';
+import product from '../../product.json' with { type: 'json' };
+import { getNotelyNpmDirs } from '../lib/notelyDirs.ts';
 
-/**
- * Complete list of directories where npm should be executed to install node modules
- */
-export const dirs = [
+const upstreamDirs = [
 	'',
 	'build',
 	'build/rspack',
@@ -66,7 +65,12 @@ export const dirs = [
 	'.vscode/extensions/vscode-pr-pinger',
 ];
 
-if (existsSync(`${import.meta.dirname}/../../.build/distro/npm`)) {
+/**
+ * Complete list of directories where npm should be executed to install node modules
+ */
+export const dirs = product.applicationName === 'notely' ? getNotelyNpmDirs() : upstreamDirs;
+
+if (product.applicationName !== 'notely' && existsSync(`${import.meta.dirname}/../../.build/distro/npm`)) {
 	dirs.push('.build/distro/npm');
 	dirs.push('.build/distro/npm/remote');
 	dirs.push('.build/distro/npm/remote/web');

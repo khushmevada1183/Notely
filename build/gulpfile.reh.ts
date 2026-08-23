@@ -141,7 +141,11 @@ const bootstrapEntryPoints = [
 ];
 
 function getNodeVersion() {
-	const npmrc = fs.readFileSync(path.join(REPO_ROOT, 'remote', '.npmrc'), 'utf8');
+	const npmrcPath = path.join(REPO_ROOT, 'remote', '.npmrc');
+	if (!fs.existsSync(npmrcPath)) {
+		return { nodeVersion: '24.18.0', internalNodeVersion: '' };
+	}
+	const npmrc = fs.readFileSync(npmrcPath, 'utf8');
 	const nodeVersion = /^target="(.*)"$/m.exec(npmrc)![1];
 	const internalNodeVersion = /^ms_build_id="(.*)"$/m.exec(npmrc)![1];
 	return { nodeVersion, internalNodeVersion };

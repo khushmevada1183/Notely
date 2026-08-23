@@ -38,6 +38,7 @@ import './mainThreadFileSystemEventService.js';
 import './mainThreadLanguageFeatures.js';
 import './mainThreadLanguages.js';
 import './mainThreadLogService.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadTelemetry.js';
 import './mainThreadMessageService.js';
 import './mainThreadProgress.js';
 import './mainThreadQuickOpen.js';
@@ -52,6 +53,13 @@ import './mainThreadWindow.js';
 import './mainThreadWorkspace.js';
 import './mainThreadLabelService.js';
 import './mainThreadSecretState.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadTerminalService.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadAuthentication.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadSearch.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadTask.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadLanguageModels.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadDebugService.js';
+import '../../contrib/minimalEditor/browser/nullMainThreadEmbeddings.js';
 
 export class ExtensionPoints implements IWorkbenchContribution {
 

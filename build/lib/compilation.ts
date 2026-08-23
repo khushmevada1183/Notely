@@ -22,6 +22,7 @@ import ts from 'typescript';
 import watch from './watch/index.ts';
 import * as tsb from './tsb/index.ts';
 import { createTsgoStream, spawnTsgo } from './tsgo.ts';
+import product from '../../product.json' with { type: 'json' };
 
 
 import { extractExtensionPointNamesFromFile } from './extractExtensionPoints.ts';
@@ -104,12 +105,22 @@ export function createCompile(src: string, { build, emitError, transpileOnly, pr
 	return pipeline;
 }
 
+function createSrcPipe(compile: ReturnType<typeof createCompile>, src: string) {
+	// Notely tsconfig excludes large trees; gulp.src('**') would still feed orphan .ts to tsb.
+	if (product.applicationName === 'notely') {
+		const resources = gulp.src(`${src}/**`, { base: `${src}` })
+			.pipe(util.filter((data) => !/\.ts$/.test(data.path) || /\.d\.ts$/.test(data.path)));
+		return es.merge([compile.tsProjectSrc(), resources]);
+	}
+	return gulp.src(`${src}/**`, { base: `${src}` });
+}
+
 export function transpileTask(src: string, out: string, esbuild?: boolean): task.StreamTask {
 
 	const task = () => {
 
 		const transpile = createCompile(src, { build: false, emitError: true, transpileOnly: { esbuild: !!esbuild }, preserveEnglish: false });
-		const srcPipe = gulp.src(`${src}/**`, { base: `${src}` });
+		const srcPipe = createSrcPipe(transpile, src);
 
 		return srcPipe
 			.pipe(transpile())
@@ -131,7 +142,7 @@ export function compileTask(src: string, out: string, build: boolean, options: {
 		// For dev builds we can transpile with esbuild for speed and type-check with tsgo (no emit).
 		// For `build`, keep the full tsb pipeline because the NLS step requires `file.sourceMap`.
 		const compile = createCompile(src, { build, emitError: true, transpileOnly: build ? false : { esbuild: true }, preserveEnglish: !!options.preserveEnglish });
-		const srcPipe = gulp.src(`${src}/**`, { base: `${src}` });
+		const srcPipe = createSrcPipe(compile, src);
 		const generator = new MonacoGenerator(false);
 		if (src === 'src') {
 			generator.execute();
@@ -166,7 +177,9 @@ export function compileTask(src: string, out: string, build: boolean, options: {
 			.pipe(compile())
 			.pipe(gulp.dest(out)));
 
-		const typecheck = spawnTsgo(compile.projectPath, { taskName: `compile-${path.basename(src)}`, noEmit: true });
+		const typecheck = product.applicationName === 'notely'
+			? Promise.resolve()
+			: spawnTsgo(compile.projectPath, { taskName: `compile-${path.basename(src)}`, noEmit: true });
 
 		await Promise.all([emit, typecheck]);
 	};
