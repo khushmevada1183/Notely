@@ -33,7 +33,7 @@ Runtime uses `workbench.minimal.main.ts` via `workbench.desktop.main.ts`. Electr
 | Workflow | Trigger | Build command |
 |----------|---------|---------------|
 | `notely-ci.yml` | push/PR `main` | `compile-client` |
-| `notely-release.yml` | `v*` tags | **Linux only** — `notely-linux-x64` → `.deb` (mac/win jobs commented out) |
+| `notely-release.yml` | `v*` tags | **3 parallel jobs** — `notely-linux-x64`, `notely-darwin-arm64`, `notely-win32-x64` |
 
 Upstream workflows stay in `.github/upstream-workflows/` — do not re-enable.
 
