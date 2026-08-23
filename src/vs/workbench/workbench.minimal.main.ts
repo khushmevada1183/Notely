@@ -102,7 +102,7 @@ import './services/views/browser/viewDescriptorService.js';
 import './services/views/browser/viewsService.js';
 import './services/quickinput/browser/quickInputService.js';
 import './services/userDataSync/browser/userDataSyncEnablementService.js';
-import './services/chat/common/chatEntitlementService.js';
+import './contrib/minimalEditor/browser/nullChatEntitlementService.js';
 import '../platform/hover/browser/hoverService.js';
 import '../platform/userInteraction/browser/userInteractionServiceImpl.js';
 import './services/languageDetection/browser/languageDetectionWorkerServiceImpl.js';

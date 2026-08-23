@@ -27,6 +27,7 @@ import { createAsar } from './lib/asar.ts';
 import minimist from 'minimist';
 import { compileBuildWithoutManglingTask, compileBuildWithManglingTask } from './gulpfile.compile.ts';
 import { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, compileAllExtensionsBuildTask, compileExtensionMediaBuildTask, cleanExtensionsBuildTask, compileCopilotExtensionBuildTask, compileNotelyExtensionsBuildTask } from './gulpfile.extensions.ts';
+import { getNotelyChecksumFiles, isNotelyExcludedNpmDependency, isNotelyExcludedOutFile } from './lib/notelyPackage.ts';
 import { copyCodiconsTask } from './lib/compilation.ts';
 import { ensureCopilotPlatformPackage, getCopilotExcludeFilter, getCopilotRuntimePrebuildFiles, getCopilotTgrepExcludeFilter, getMxcExcludeFilter, getRipgrepExcludeFilter, prepareBuiltInCopilotRipgrepShim } from './lib/copilot.ts';
 import { ensureOSProxyResolverPlatformPackage, getOSProxyResolverExcludeFilter, getOSProxyResolverPlatformFiles } from './lib/osProxyResolver.ts';
@@ -262,11 +263,13 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 	const destination = path.join(path.dirname(root), destinationFolderName);
 	platform = platform || process.platform;
 
+	const isNotelyBuild = product.applicationName === 'notely';
+
 	const task = () => {
 		const out = sourceFolderName;
 		const versionedResourcesFolder = util.getVersionedResourcesFolder(platform, commit!);
 
-		const checksums = computeChecksums(out, [
+		const checksumFiles = isNotelyBuild ? getNotelyChecksumFiles() : [
 			'vs/base/parts/sandbox/electron-browser/preload.js',
 			'vs/workbench/workbench.desktop.main.js',
 			'vs/workbench/workbench.desktop.main.css',
@@ -277,7 +280,8 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 			'vs/sessions/sessions.desktop.main.css',
 			'vs/sessions/electron-browser/sessions.html',
 			'vs/sessions/electron-browser/sessions.js'
-		]);
+		];
+		const checksums = computeChecksums(out, checksumFiles);
 
 		const src = gulp.src(out + '/**', { base: '.' })
 			.pipe(rename(function (path) { path.dirname = path.dirname!.replace(new RegExp('^' + out), 'out'); }))
@@ -297,8 +301,11 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 		const sourceFilterPattern = stripSourceMapsInPackagingTasks
 			? ['**', '!**/*.{js,css}.map']
 			: ['**'];
-		const sources = es.merge(src, extensions)
+		let sources = es.merge(src, extensions)
 			.pipe(filter(sourceFilterPattern, { dot: true }));
+		if (isNotelyBuild) {
+			sources = sources.pipe(filter((file: { path: string }) => !isNotelyExcludedOutFile(file.path)));
+		}
 
 		let version = packageJson.version;
 		const quality = (product as { quality?: string }).quality;
@@ -359,7 +366,8 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 
 		const jsFilter = util.filter(data => !data.isDirectory() && /\.js$/.test(data.path));
 		const root = path.resolve(path.join(import.meta.dirname, '..'));
-		const productionDependencies = getProductionDependencies(root);
+		const productionDependencies = getProductionDependencies(root)
+			.filter(dep => !isNotelyBuild || !isNotelyExcludedNpmDependency(dep));
 		const dependenciesSrc = productionDependencies.map(d => path.relative(root, d)).map(d => [`${d}/**`, `!${d}/**/{test,tests}/**`]).flat().concat('!**/*.mk');
 
 		const depFilterPattern = ['**', `!**/${config.version}/**`, '!**/bin/darwin-arm64-87/**', '!**/package-lock.json', '!**/yarn.lock'];
@@ -367,10 +375,13 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 			depFilterPattern.push('!**/*.{js,css}.map');
 		}
 
-		const cleanedDeps = gulp.src(dependenciesSrc, { base: '.', dot: true })
+		let cleanedDeps = gulp.src(dependenciesSrc, { base: '.', dot: true })
 			.pipe(filter(depFilterPattern))
 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, '.moduleignore')))
 			.pipe(util.cleanNodeModules(path.join(import.meta.dirname, `.moduleignore.${process.platform}`)));
+		if (isNotelyBuild) {
+			cleanedDeps = cleanedDeps.pipe(util.cleanNodeModules(path.join(import.meta.dirname, '.moduleignore.notely')));
+		}
 		let copilotRuntimePrebuilds = es.readArray([]);
 		if (includeCopilotInBuild) {
 			ensureCopilotPlatformPackage(platform, arch);

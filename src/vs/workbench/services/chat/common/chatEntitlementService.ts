@@ -1529,4 +1529,6 @@ export class ChatEntitlementContext extends Disposable {
 
 //#endregion
 
-registerSingleton(IChatEntitlementService, ChatEntitlementService, InstantiationType.Eager /* To ensure context keys are set asap */);
+if (product.defaultChatAgent) {
+	registerSingleton(IChatEntitlementService, ChatEntitlementService, InstantiationType.Eager /* To ensure context keys are set asap */);
+}

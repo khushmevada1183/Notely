@@ -33,6 +33,12 @@ Replace `extensionHost.contribution.js` with `extensionHost.minimal.contribution
 
 Register `nullQuickDiffModelService.ts` — `mainThreadDocumentsAndEditors` needs `IQuickDiffModelService`; stub returns `undefined` instead of pulling SCM.
 
+Register `nullChatEntitlementService.ts` when no `defaultChatAgent` — avoids Copilot entitlement network calls.
+
+## Package garbage (Notely installers)
+
+`build/lib/notelyPackage.ts` + `build/.moduleignore.notely` strip AI npm packages and unused `out/` (chat, agentHost, mcp, sessions) from `notely-*` gulp targets only. Repo still carries upstream Copilot source for fork sync.
+
 ## Stubs Over Re-imports
 
 If a MainThread you keep requires a service whose contrib was removed, add a **null singleton** under `contrib/minimalEditor/browser/` — never re-import full VS Code contribs (SCM, chat, webview).

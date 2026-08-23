@@ -1,0 +1,9 @@
+# Notely: strip AI/Copilot npm packages from production installers
+
+@github/copilot/**
+@github/copilot-*/**
+@github/copilot-sdk/**
+@vscode/copilot-api/**
+@anthropic-ai/**
+@openai/**
+openai/**
