@@ -206,6 +206,8 @@ jobs:
     if: ${{ needs.linux-x64.result == 'success' && needs.darwin-arm64.result == 'success' && needs.win32-x64.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: release-artifacts
