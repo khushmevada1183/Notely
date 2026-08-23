@@ -14,7 +14,21 @@ import { ConfigurationTarget, IConfigurationService } from '../../../../platform
 import { IContextMenuService } from '../../../../platform/contextview/browser/contextView.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
 import { IPreferencesService, ISetting } from '../../../services/preferences/common/preferences.js';
-import { settingKeyToDisplayFormat } from '../../preferences/browser/settingsTreeModels.js';
+import { wordifyKey } from '../../preferences/common/preferences.js';
+
+function settingKeyToDisplayFormat(key: string, groupId: string = ''): { category: string; label: string } {
+	const lastDotIdx = key.lastIndexOf('.');
+	let category = '';
+	if (lastDotIdx >= 0) {
+		category = key.substring(0, lastDotIdx);
+		key = key.substring(lastDotIdx + 1);
+	}
+	groupId = groupId.replace(/\//g, '.');
+	if (groupId && category.startsWith(groupId + '.')) {
+		category = category.substring(groupId.length + 1);
+	}
+	return { category: wordifyKey(category), label: wordifyKey(key) };
+}
 
 export class SimpleSettingRenderer {
 	private readonly codeSettingAnchorRegex: RegExp;

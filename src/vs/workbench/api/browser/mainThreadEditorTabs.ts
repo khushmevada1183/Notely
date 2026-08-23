@@ -16,13 +16,9 @@ import { isGroupEditorMoveEvent } from '../../common/editor/editorGroupModel.js'
 import { EditorInput } from '../../common/editor/editorInput.js';
 import { SideBySideEditorInput } from '../../common/editor/sideBySideEditorInput.js';
 import { AbstractTextResourceEditorInput } from '../../common/editor/textResourceEditorInput.js';
-import { ChatEditorInput } from '../../contrib/chat/browser/widgetHosts/editor/chatEditorInput.js';
 import { CustomEditorInput } from '../../contrib/customEditor/browser/customEditorInput.js';
-import { InteractiveEditorInput } from '../../contrib/interactive/browser/interactiveEditorInput.js';
 import { MergeEditorInput } from '../../contrib/mergeEditor/browser/mergeEditorInput.js';
 import { MultiDiffEditorInput } from '../../contrib/multiDiffEditor/browser/multiDiffEditorInput.js';
-import { NotebookEditorInput } from '../../contrib/notebook/common/notebookEditorInput.js';
-import { TerminalEditorInput } from '../../contrib/terminal/browser/terminalEditorInput.js';
 import { WebviewInput } from '../../contrib/webviewPanel/browser/webviewEditorInput.js';
 import { columnToEditorGroup, EditorGroupColumn, editorGroupToColumn } from '../../services/editor/common/editorGroupColumn.js';
 import { GroupDirection, IEditorGroup, IEditorGroupsService, preferredSideBySideGroupDirection } from '../../services/editor/common/editorGroupsService.js';
@@ -143,11 +139,12 @@ export class MainThreadEditorTabs implements MainThreadEditorTabsShape {
 			return { kind: TabInputKind.UnknownInput };
 		}
 
-		if (editor instanceof NotebookEditorInput) {
+		if (editor.typeId === 'workbench.input.notebook') {
+			const notebookEditor = editor as EditorInput & { viewType?: string; resource?: URI };
 			return {
 				kind: TabInputKind.NotebookInput,
-				notebookType: editor.viewType,
-				uri: editor.resource
+				notebookType: notebookEditor.viewType ?? '',
+				uri: notebookEditor.resource!
 			};
 		}
 
@@ -166,12 +163,6 @@ export class MainThreadEditorTabs implements MainThreadEditorTabsShape {
 			};
 		}
 
-		if (editor instanceof TerminalEditorInput) {
-			return {
-				kind: TabInputKind.TerminalEditorInput
-			};
-		}
-
 		if (editor instanceof DiffEditorInput) {
 			if (editor.modified instanceof AbstractTextResourceEditorInput && editor.original instanceof AbstractTextResourceEditorInput) {
 				return {
@@ -180,27 +171,24 @@ export class MainThreadEditorTabs implements MainThreadEditorTabsShape {
 					original: editor.original.resource
 				};
 			}
-			if (editor.modified instanceof NotebookEditorInput && editor.original instanceof NotebookEditorInput) {
+			if (editor.modified.typeId === 'workbench.input.notebook' && editor.original.typeId === 'workbench.input.notebook') {
+				const modified = editor.modified as EditorInput & { viewType?: string; resource?: URI };
+				const original = editor.original as EditorInput & { viewType?: string; resource?: URI };
 				return {
 					kind: TabInputKind.NotebookDiffInput,
-					notebookType: editor.original.viewType,
-					modified: editor.modified.resource,
-					original: editor.original.resource
+					notebookType: original.viewType ?? '',
+					modified: modified.resource!,
+					original: original.resource!
 				};
 			}
 		}
 
-		if (editor instanceof InteractiveEditorInput) {
+		if (editor.typeId === 'workbench.input.interactive') {
+			const interactive = editor as EditorInput & { resource?: URI; inputResource?: URI };
 			return {
 				kind: TabInputKind.InteractiveEditorInput,
-				uri: editor.resource,
-				inputBoxUri: editor.inputResource
-			};
-		}
-
-		if (editor instanceof ChatEditorInput) {
-			return {
-				kind: TabInputKind.ChatEditorInput,
+				uri: interactive.resource!,
+				inputBoxUri: interactive.inputResource!
 			};
 		}
 

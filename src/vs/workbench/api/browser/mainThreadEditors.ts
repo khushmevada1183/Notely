@@ -28,7 +28,7 @@ import { IExtHostContext } from '../../services/extensions/common/extHostCustome
 import { IEditorControl } from '../../common/editor.js';
 import { getCodeEditor, ICodeEditor } from '../../../editor/browser/editorBrowser.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { IQuickDiffModelService } from '../../contrib/scm/browser/quickDiffModel.js';
+import { IQuickDiffModelService } from '../../contrib/minimalEditor/browser/quickDiffModel.js';
 import { autorun, constObservable, derived, derivedOpts, IObservable, observableFromEvent } from '../../../base/common/observable.js';
 import { IUriIdentityService } from '../../../platform/uriIdentity/common/uriIdentity.js';
 import { isITextModel } from '../../../editor/common/model.js';

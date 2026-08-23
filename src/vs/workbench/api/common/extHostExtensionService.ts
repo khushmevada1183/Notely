@@ -14,6 +14,7 @@ import { URI, UriComponents } from '../../../base/common/uri.js';
 import { ILogService } from '../../../platform/log/common/log.js';
 import { ExtHostExtensionServiceShape, MainContext, MainThreadExtensionServiceShape, MainThreadTelemetryShape, MainThreadWorkspaceShape } from './extHost.protocol.js';
 import { IExtensionDescriptionDelta, IExtensionHostInitData } from '../../services/extensions/common/extensionHostProtocol.js';
+import type * as vscode from 'vscode';
 import { ExtHostConfiguration, IExtHostConfiguration } from './extHostConfiguration.js';
 import { ActivatedExtension, EmptyExtension, ExtensionActivationTimes, ExtensionActivationTimesBuilder, ExtensionsActivator, IExtensionAPI, IExtensionModule, HostExtension, ExtensionActivationTimesFragment } from './extHostExtensionActivator.js';
 import { ExtHostStorage, IExtHostStorage } from './extHostStorage.js';
@@ -21,7 +22,6 @@ import { ExtHostWorkspace, IExtHostWorkspace } from './extHostWorkspace.js';
 import { MissingExtensionDependency, ActivationKind, checkProposedApiEnabled, isProposedApiEnabled, ExtensionActivationReason, IProposedApiUsage, setProposedApiUsageReporter, setEnabledApiProposalsFallbackExperiment } from '../../services/extensions/common/extensions.js';
 import { ExtensionDescriptionRegistry, IActivationEventsReader } from '../../services/extensions/common/extensionDescriptionRegistry.js';
 import * as errors from '../../../base/common/errors.js';
-import type * as vscode from 'vscode';
 import { ExtensionIdentifier, ExtensionIdentifierMap, ExtensionIdentifierSet, IExtensionDescription } from '../../../platform/extensions/common/extensions.js';
 import { VSBuffer } from '../../../base/common/buffer.js';
 import { ExtensionGlobalMemento, ExtensionMemento } from './extHostMemento.js';
@@ -34,7 +34,6 @@ import { IExtHostRpcService } from './extHostRpcService.js';
 import { ServiceCollection } from '../../../platform/instantiation/common/serviceCollection.js';
 import { IExtHostTunnelService } from './extHostTunnelService.js';
 import { IExtHostTerminalService } from './extHostTerminalService.js';
-import { IExtHostLanguageModels } from './extHostLanguageModels.js';
 import { Emitter, Event } from '../../../base/common/event.js';
 import { IExtensionActivationHost, checkActivateWorkspaceContainsExtension } from '../../services/extensions/common/workspaceContains.js';
 import { ExtHostSecretState, IExtHostSecretState } from './extHostSecretState.js';
@@ -136,7 +135,6 @@ export abstract class AbstractExtHostExtensionService extends Disposable impleme
 		@IExtHostTerminalService extHostTerminalService: IExtHostTerminalService,
 		@IExtHostLocalizationService extHostLocalizationService: IExtHostLocalizationService,
 		@IExtHostManagedSockets private readonly _extHostManagedSockets: IExtHostManagedSockets,
-		@IExtHostLanguageModels private readonly _extHostLanguageModels: IExtHostLanguageModels,
 	) {
 		super();
 		this._hostUtils = hostUtils;
@@ -524,7 +522,10 @@ export abstract class AbstractExtHostExtensionService extends Disposable impleme
 
 	private _loadExtensionContext(extensionDescription: IExtensionDescription, extensionInternalStore: DisposableStore): Promise<vscode.ExtensionContext> {
 
-		const languageModelAccessInformation = this._extHostLanguageModels.createLanguageModelAccessInformation(extensionDescription);
+		const languageModelAccessInformation: vscode.LanguageModelAccessInformation = {
+			get onDidChange() { return Event.None; },
+			canSendRequest(_chat: vscode.LanguageModelChat, _options?: vscode.LanguageModelChatRequestOptions) { return false; },
+		};
 		const globalState = extensionInternalStore.add(new ExtensionGlobalMemento(extensionDescription, this._storage));
 		const workspaceState = extensionInternalStore.add(new ExtensionMemento(extensionDescription.identifier.value, false, this._storage));
 		const secrets = extensionInternalStore.add(new ExtensionSecrets(extensionDescription, this._secretState));

@@ -56,19 +56,19 @@ import { WorkspaceTrustRequestOptions } from '../../../platform/workspace/common
 import { SaveReason } from '../../common/editor.js';
 import { IRevealOptions, ITreeItem, IViewBadge } from '../../common/views.js';
 import { CallHierarchyItem } from '../../contrib/callHierarchy/common/callHierarchy.js';
-import { IChatAgentMetadata, IChatAgentRequest, IChatAgentResult, UserSelectedTools } from '../../contrib/chat/common/participants/chatAgents.js';
-import { ICodeMapperRequest, ICodeMapperResult } from '../../contrib/chat/common/editing/chatCodeMapperService.js';
-import { IChatContextItem } from '../../contrib/chat/common/contextContrib/chatContext.js';
-import { IChatProgressHistoryResponseContent, IChatRequestModeInstructions, IChatRequestVariableData } from '../../contrib/chat/common/model/chatModel.js';
-import { ChatResponseClearToPreviousToolInvocationReason, IChatContentInlineReference, IChatExternalEditsDto, IChatFollowup, IChatMultiDiffData, IChatMultiDiffDataSerialized, IChatNotebookEdit, IChatProgress, IChatTask, IChatTaskDto, IChatUserActionEvent, IChatVoteAction } from '../../contrib/chat/common/chatService/chatService.js';
-import { IChatSessionItem, IChatSessionProviderOptionGroup, IChatSessionProviderOptionItem } from '../../contrib/chat/common/chatSessionsService.js';
-import { IChatRequestVariableValue } from '../../contrib/chat/common/attachments/chatVariables.js';
-import { ChatAgentLocation } from '../../contrib/chat/common/constants.js';
-import { IChatMessage, IChatResponsePart, ILanguageModelChatInfoOptions, ILanguageModelChatMetadataAndIdentifier, ILanguageModelChatRequestOptions, ILanguageModelChatSelector } from '../../contrib/chat/common/languageModels.js';
-import { IPreparedToolInvocation, IStreamedToolInvocation, IToolInvocation, IToolInvocationPreparationContext, IToolInvocationStreamContext, IToolProgressStep, IToolResult, ToolDataSource } from '../../contrib/chat/common/tools/languageModelToolsService.js';
-import { IPromptFileContext, IPromptFileResource } from '../../contrib/chat/common/promptSyntax/service/promptsService.js';
+import type {
+	ChatAgentLocation, ChatResponseClearToPreviousToolInvocationReason, IChatAgentMetadata, IChatAgentRequest, IChatAgentResult,
+	IChatContentInlineReference, IChatExternalEditsDto, IChatFollowup, IChatMessage, IChatMultiDiffData, IChatMultiDiffDataSerialized,
+	IChatNotebookEdit, IChatProgress, IChatProgressHistoryResponseContent, IChatRequestModeInstructions, IChatRequestVariableData,
+	IChatRequestVariableValue, IChatResponsePart, IChatSessionItem, IChatSessionProviderOptionGroup, IChatSessionProviderOptionItem,
+	IChatTask, IChatTaskDto, IChatUserActionEvent, IChatVoteAction, IChatContextItem, ICodeMapperRequest, ICodeMapperResult,
+	ILanguageModelChatInfoOptions, ILanguageModelChatMetadataAndIdentifier, ILanguageModelChatRequestOptions, ILanguageModelChatSelector,
+	IPreparedToolInvocation, IPromptFileContext, IPromptFileResource, IStreamedToolInvocation, IToolInvocation,
+	IToolInvocationPreparationContext, IToolInvocationStreamContext, IToolProgressStep, IToolResult, McpCollectionDefinition,
+	McpConnectionState, McpServerDefinition, McpServerLaunch, PromptsType, ToolDataSource, UserSelectedTools,
+	IKeywordRecognitionEvent, ISpeechProviderMetadata, ISpeechToTextEvent, ITextToSpeechEvent,
+} from './notely/aiProtocolStubs.js';
 import { DebugConfigurationProviderTriggerKind, IAdapterDescriptor, IConfig, IDebugSessionReplMode, IDebugTestRunReference, IDebugVisualization, IDebugVisualizationContext, IDebugVisualizationTreeItem, MainThreadDebugVisualization } from '../../contrib/debug/common/debug.js';
-import { McpCollectionDefinition, McpConnectionState, McpServerDefinition, McpServerLaunch } from '../../contrib/mcp/common/mcpTypes.js';
 import * as notebookCommon from '../../contrib/notebook/common/notebookCommon.js';
 import { CellExecutionUpdateType } from '../../contrib/notebook/common/notebookExecutionService.js';
 import { ICellExecutionComplete, ICellExecutionStateUpdate } from '../../contrib/notebook/common/notebookExecutionStateService.js';
@@ -77,7 +77,6 @@ import { ISCMHistoryOptions } from '../../contrib/scm/common/history.js';
 import { InputValidationType } from '../../contrib/scm/common/scm.js';
 import { IWorkspaceSymbol, NotebookPriorityInfo } from '../../contrib/search/common/search.js';
 import { IRawClosedNotebookFileMatch } from '../../contrib/search/common/searchNotebookHelpers.js';
-import { IKeywordRecognitionEvent, ISpeechProviderMetadata, ISpeechToTextEvent, ITextToSpeechEvent } from '../../contrib/speech/common/speechService.js';
 import { CoverageDetails, ExtensionRunTestsRequest, ICallProfileRunHandler, IFileCoverage, ISerializedTestResults, IStartControllerTests, ITestItem, ITestMessage, ITestRunProfile, ITestRunTask, ResolvedTestRunRequest, TestControllerCapability, TestMessageFollowupRequest, TestMessageFollowupResponse, TestResultState, TestsDiffOp } from '../../contrib/testing/common/testTypes.js';
 import { Timeline, TimelineChangeEvent, TimelineOptions, TimelineProviderDescriptor } from '../../contrib/timeline/common/timeline.js';
 import { TypeHierarchyItem } from '../../contrib/typeHierarchy/common/typeHierarchy.js';
@@ -100,7 +99,6 @@ import { ISaveProfileResult } from '../../services/userDataProfile/common/userDa
 import { IExtHostDocumentSaveDelegate } from './extHostDocumentData.js';
 import { TerminalShellExecutionCommandLineConfidence } from './extHostTypes.js';
 import * as tasks from './shared/tasks.js';
-import { PromptsType } from '../../contrib/chat/common/promptSyntax/promptTypes.js';
 import { CDPEvent, CDPRequest, CDPResponse } from '../../../platform/browserView/common/cdp/types.js';
 
 export type IconPathDto =
