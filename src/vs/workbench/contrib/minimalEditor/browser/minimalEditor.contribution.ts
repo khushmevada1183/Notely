@@ -19,6 +19,7 @@ configurationRegistry.registerDefaultConfigurations([{
 		'workbench.enableExperiments': false,
 		'telemetry.telemetryLevel': 'off',
 		'files.simpleDialog.enable': true,
+		'window.menuBarVisibility': 'classic',
 		'workbench.colorTheme': 'Just Black',
 	}
 }]);
