@@ -1111,29 +1111,23 @@ export class CodeApplication extends Disposable {
 
 		return false;
 	}
-
 	private setupSharedProcess(machineId: string, sqmId: string, devDeviceId: string): { sharedProcessReady: Promise<MessagePortClient>; sharedProcessClient: Promise<MessagePortClient> } {
-		const sharedProcess = this._register(this.mainInstantiationService.createInstance(SharedProcess, machineId, sqmId, devDeviceId));
-
-		this._register(sharedProcess.onDidCrash(() => this.windowsMainService?.sendToFocused('vscode:reportSharedProcessCrash')));
-
-		const sharedProcessClient = (async () => {
-			this.logService.trace('Main->SharedProcess#connect');
-
-			const port = await sharedProcess.connect();
-
-			this.logService.trace('Main->SharedProcess#connect: connection established');
-
-			return new MessagePortClient(port, 'main');
-		})();
-
-		const sharedProcessReady = (async () => {
-			await sharedProcess.whenReady();
-
-			return sharedProcessClient;
-		})();
-
-		return { sharedProcessReady, sharedProcessClient };
+		// NOTELY: We disable the external SharedProcess child process to drastically reduce memory usage.
+		// A minimal notepad doesn't need external process synchronization for state.
+		const dummyClient = {
+			getChannel: (channelName: string) => {
+				return {
+					call: () => Promise.resolve(),
+					listen: () => Event.None
+				};
+			},
+			registerChannel: () => {},
+			dispose: () => {}
+		} as unknown as MessagePortClient;
+		return {
+			sharedProcessReady: Promise.resolve(dummyClient),
+			sharedProcessClient: Promise.resolve(dummyClient)
+		};
 	}
 
 	private async initServices(machineId: string, sqmId: string, devDeviceId: string, sharedProcessReady: Promise<MessagePortClient>): Promise<IInstantiationService> {

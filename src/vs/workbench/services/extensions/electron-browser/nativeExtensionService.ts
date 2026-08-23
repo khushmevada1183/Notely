@@ -565,12 +565,9 @@ class NativeExtensionHostFactory implements IExtensionHostFactory {
 	public createExtensionHost(runningLocations: ExtensionRunningLocationTracker, runningLocation: ExtensionRunningLocation, isInitialStart: boolean): IExtensionHost | null {
 		switch (runningLocation.kind) {
 			case ExtensionHostKind.LocalProcess: {
-				const startup = (
-					isInitialStart
-						? ExtensionHostStartup.EagerManualStart
-						: ExtensionHostStartup.EagerAutoStart
-				);
-				return this._instantiationService.createInstance(NativeLocalProcessExtensionHost, runningLocation, startup, this._createLocalProcessExtensionHostDataProvider(runningLocations, isInitialStart, runningLocation));
+				// NOTELY: We explicitly disable the LocalProcess Extension Host to eliminate the Node.js process overhead.
+				// All extensions will run in the LocalWebWorker.
+				return null;
 			}
 			case ExtensionHostKind.LocalWebWorker: {
 				if (this._webWorkerExtHostEnablement !== LocalWebWorkerExtHostEnablement.Disabled) {
@@ -693,8 +690,8 @@ export class NativeExtensionHostKindPicker implements IExtensionHostKindPicker {
 		@ILogService private readonly _logService: ILogService,
 	) {
 		this._hasRemoteExtHost = Boolean(environmentService.remoteAuthority);
-		const webWorkerExtHostEnablement = determineLocalWebWorkerExtHostEnablement(environmentService, configurationService);
-		this._hasWebWorkerExtHost = (webWorkerExtHostEnablement !== LocalWebWorkerExtHostEnablement.Disabled);
+		// NOTELY: Force enable WebWorker extension host so we can run all extensions in renderer instead of Node process.
+		this._hasWebWorkerExtHost = true;
 	}
 
 	public pickExtensionHostKind(extensionId: ExtensionIdentifier, extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference): ExtensionHostKind | null {
@@ -704,6 +701,12 @@ export class NativeExtensionHostKindPicker implements IExtensionHostKindPicker {
 	}
 
 	public static pickExtensionHostKind(extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference, hasRemoteExtHost: boolean, hasWebWorkerExtHost: boolean): ExtensionHostKind | null {
+		// NOTELY: Force all extensions (grammars, themes) to run in the local WebWorker.
+		// This prevents spawning a heavy Node.js Extension Host child process.
+		if (hasWebWorkerExtHost) {
+			return ExtensionHostKind.LocalWebWorker;
+		}
+		
 		const result: ExtensionHostKind[] = [];
 		for (const extensionKind of extensionKinds) {
 			if (extensionKind === 'ui' && isInstalledLocally) {

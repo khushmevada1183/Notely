@@ -48,8 +48,8 @@ function code() {
 		DISABLE_TEST_EXTENSION=""
 	fi
 
-	# Launch Code
-	exec "$CODE" . $DISABLE_TEST_EXTENSION "$@"
+	# Launch Code with V8 memory optimization, software 2D rendering, and disabled extensions
+	exec "$CODE" . --js-flags="--max-old-space-size=128 --optimize-for-size" --disable-gpu --disable-gpu-compositing --in-process-gpu --no-sandbox --no-zygote $DISABLE_TEST_EXTENSION "$@"
 }
 
 function code-wsl()
