@@ -125,7 +125,8 @@ function installHeaders() {
 		: path.join(import.meta.dirname, 'gyp', 'node_modules', '.bin', 'node-gyp');
 
 	const local = getHeaderInfo(path.join(import.meta.dirname, '..', '..', '.npmrc'));
-	const remote = getHeaderInfo(path.join(import.meta.dirname, '..', '..', 'remote', '.npmrc'));
+	const remoteRc = path.join(import.meta.dirname, '..', '..', 'remote', '.npmrc');
+	const remote = fs.existsSync(remoteRc) ? getHeaderInfo(remoteRc) : undefined;
 
 	if (local !== undefined) {
 		// Both disturl and target come from a file checked into our repository
