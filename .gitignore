@@ -53,3 +53,4 @@ release-artifacts/
 .github/prompts/*.local.prompt.md
 .agents/skills/.local/
 .github/skills/.local/
+.worktrees/
