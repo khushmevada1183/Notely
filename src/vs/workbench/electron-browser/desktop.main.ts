@@ -65,7 +65,7 @@ import { IConfigurationService } from '../../platform/configuration/common/confi
 import { applyZoom } from '../../platform/window/electron-browser/window.js';
 import { mainWindow } from '../../base/browser/window.js';
 import { IDefaultAccountService } from '../../platform/defaultAccount/common/defaultAccount.js';
-import { DefaultAccountService } from '../services/accounts/browser/defaultAccount.js';
+import { NullDefaultAccountService } from '../../platform/defaultAccount/common/nullDefaultAccountService.js';
 import { AccountPolicyService, IAccountPolicyGateService } from '../services/policies/common/accountPolicyService.js';
 import { MultiplexPolicyService } from '../../platform/policy/common/multiplexPolicyService.js';
 
@@ -212,8 +212,14 @@ export class DesktopMain extends Disposable {
 			logService.trace('workbench#open(): with configuration', safeStringify({ ...this.configuration, nls: undefined /* exclude large property */ }));
 		}
 
-		// Default Account
-		const defaultAccountService = this._register(new DefaultAccountService(productService));
+		// Default Account (Copilot/GitHub sign-in — skipped for Notely)
+		let defaultAccountService: IDefaultAccountService;
+		if (productService.defaultChatAgent) {
+			const { DefaultAccountService } = await import('../services/accounts/browser/defaultAccount.js');
+			defaultAccountService = this._register(new DefaultAccountService(productService));
+		} else {
+			defaultAccountService = this._register(new NullDefaultAccountService());
+		}
 		serviceCollection.set(IDefaultAccountService, defaultAccountService);
 
 		// Policies

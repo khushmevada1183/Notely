@@ -1191,19 +1191,19 @@ class DefaultAccountProviderContribution extends Disposable implements IWorkbenc
 	}
 }
 
-registerAction2(class extends Action2 {
-	constructor() {
-		super({
-			id: DEFAULT_ACCOUNT_SIGN_IN_COMMAND,
-			title: localize2('signIn', 'Sign In'),
-		});
-	}
-	async run(accessor: ServicesAccessor): Promise<void> {
-		const defaultAccountService = accessor.get(IDefaultAccountService);
-		await defaultAccountService.signIn();
-	}
-});
-
 if (product.defaultChatAgent) {
+	registerAction2(class extends Action2 {
+		constructor() {
+			super({
+				id: DEFAULT_ACCOUNT_SIGN_IN_COMMAND,
+				title: localize2('signIn', 'Sign In'),
+			});
+		}
+		async run(accessor: ServicesAccessor): Promise<void> {
+			const defaultAccountService = accessor.get(IDefaultAccountService);
+			await defaultAccountService.signIn();
+		}
+	});
+
 	registerWorkbenchContribution2(DefaultAccountProviderContribution.ID, DefaultAccountProviderContribution, WorkbenchPhase.BlockStartup);
 }

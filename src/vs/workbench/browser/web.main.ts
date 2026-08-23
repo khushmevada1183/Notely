@@ -96,7 +96,7 @@ import { TunnelSource } from '../services/remote/common/tunnelModel.js';
 import { mainWindow } from '../../base/browser/window.js';
 import { INotificationService, Severity } from '../../platform/notification/common/notification.js';
 import { IDefaultAccountService } from '../../platform/defaultAccount/common/defaultAccount.js';
-import { DefaultAccountService } from '../services/accounts/browser/defaultAccount.js';
+import { NullDefaultAccountService } from '../../platform/defaultAccount/common/nullDefaultAccountService.js';
 import { AccountPolicyService, IAccountPolicyGateService } from '../services/policies/common/accountPolicyService.js';
 
 export interface IBrowserMainWorkbench {
@@ -363,7 +363,13 @@ export class BrowserMain extends Disposable {
 		this._register(RemoteFileSystemProviderClient.register(remoteAgentService, fileService, logService));
 
 		// Default Account
-		const defaultAccountService = this._register(new DefaultAccountService(productService));
+		let defaultAccountService: IDefaultAccountService;
+		if (productService.defaultChatAgent) {
+			const { DefaultAccountService } = await import('../services/accounts/browser/defaultAccount.js');
+			defaultAccountService = this._register(new DefaultAccountService(productService));
+		} else {
+			defaultAccountService = this._register(new NullDefaultAccountService());
+		}
 		serviceCollection.set(IDefaultAccountService, defaultAccountService);
 
 		// Policies
