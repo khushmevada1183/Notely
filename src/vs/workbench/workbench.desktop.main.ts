@@ -32,7 +32,7 @@ import './electron-browser/parts/dialogs/dialog.contribution.js';
 //#endregion
 
 
-//#region --- workbench services
+//#region --- workbench services (Notely production — keep updateService)
 
 import './services/textfile/electron-browser/nativeTextFileService.js';
 import './services/dialogs/electron-browser/fileDialogService.js';
@@ -54,23 +54,18 @@ import './services/keybinding/electron-browser/nativeKeyboardLayout.js';
 import './services/path/electron-browser/pathService.js';
 import './services/themes/electron-browser/nativeHostColorSchemeService.js';
 import './services/extensionManagement/electron-browser/extensionManagementService.js';
-import './services/mcp/electron-browser/mcpGalleryManifestService.js';
-import './services/mcp/electron-browser/mcpWorkbenchManagementService.js';
 import './services/encryption/electron-browser/encryptionService.js';
-import './services/imageResize/electron-browser/imageResizeService.js';
-import './services/localTranscription/electron-browser/localTranscriptionService.js';
 import './services/secrets/electron-browser/secretStorageService.js';
 import './services/localization/electron-browser/languagePackService.js';
 import './services/telemetry/electron-browser/telemetryService.js';
+import './services/userDataSync/electron-browser/userDataSyncService.js';
 import './services/extensions/electron-browser/extensionHostStarter.js';
 import '../platform/extensionResourceLoader/common/extensionResourceLoaderService.js';
 import './services/localization/electron-browser/localeService.js';
 import './services/extensions/electron-browser/extensionsScannerService.js';
 import './services/extensionManagement/electron-browser/extensionManagementServerService.js';
 import './services/extensionManagement/electron-browser/extensionGalleryManifestService.js';
-import './services/extensionManagement/electron-browser/extensionTipsService.js';
-import './services/userDataSync/electron-browser/userDataSyncService.js';
-import './services/userDataSync/electron-browser/userDataAutoSyncService.js';
+import './services/remote/electron-browser/remoteAgentService.js';
 import './services/timer/electron-browser/timerService.js';
 import './services/environment/electron-browser/shellEnvironmentService.js';
 import './services/integrity/electron-browser/integrityService.js';
@@ -79,23 +74,13 @@ import './services/checksum/electron-browser/checksumService.js';
 import '../platform/remote/electron-browser/sharedProcessTunnelService.js';
 import './services/tunnel/electron-browser/tunnelService.js';
 import '../platform/diagnostics/electron-browser/diagnosticsService.js';
-import '../platform/profiling/electron-browser/profilingService.js';
-import '../platform/telemetry/electron-browser/customEndpointTelemetryService.js';
-import '../platform/remoteTunnel/electron-browser/remoteTunnelService.js';
 import './services/files/electron-browser/elevatedFileService.js';
-import './services/search/electron-browser/searchService.js';
 import './services/workingCopy/electron-browser/workingCopyHistoryService.js';
-import './services/userDataSync/browser/userDataSyncEnablementService.js';
 import './services/extensions/electron-browser/nativeExtensionService.js';
 import '../platform/userDataProfile/electron-browser/userDataProfileStorageService.js';
 import './services/auxiliaryWindow/electron-browser/auxiliaryWindowService.js';
 import '../platform/extensionManagement/electron-browser/extensionsProfileScannerService.js';
 import '../platform/sandbox/electron-browser/sandboxHelperService.js';
-import '../platform/webContentExtractor/electron-browser/webContentExtractorService.js';
-import './services/agentHost/electron-browser/agentHostService.js';
-import '../platform/agentHost/electron-browser/remoteAgentHostService.js';
-import '../platform/agentHost/browser/agentHostEnablementService.js';
-import './services/browserView/electron-browser/playwrightWorkbenchService.js';
 import './services/process/electron-browser/processService.js';
 import './services/power/electron-browser/powerService.js';
 
@@ -117,6 +102,7 @@ import './contrib/files/electron-browser/fileActions.contribution.js';
 import './contrib/codeEditor/electron-browser/codeEditor.contribution.js';
 import './services/themes/electron-browser/themes.contribution.js';
 import './contrib/splash/electron-browser/splash.contribution.js';
+import './contrib/update/browser/update.contribution.js';
 import './contrib/debug/electron-browser/extensionHostDebugService.js';
 
 //#endregion

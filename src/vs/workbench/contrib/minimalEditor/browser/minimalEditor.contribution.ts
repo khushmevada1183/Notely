@@ -15,7 +15,7 @@ configurationRegistry.registerDefaultConfigurations([{
 		'workbench.panel.opensMaximized': 'never',
 		'workbench.statusBar.visible': true,
 		'workbench.editor.showTabs': 'single',
-		'workbench.startupEditor': 'none',
+		'workbench.startupEditor': 'newUntitledFile',
 		'workbench.enableExperiments': false,
 		'telemetry.telemetryLevel': 'off',
 		'files.simpleDialog.enable': true,

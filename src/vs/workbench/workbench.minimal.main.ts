@@ -7,7 +7,7 @@
 
 import '../editor/editor.all.js';
 
-import './api/browser/extensionHost.contribution.js';
+import './api/browser/extensionHost.minimal.contribution.js';
 import './browser/workbench.contribution.js';
 import './browser/workbench.zenMode.contribution.js';
 
@@ -54,6 +54,7 @@ import './browser/parts/editor/editorParts.js';
 import './browser/parts/paneCompositePartService.js';
 import './browser/parts/banner/bannerPart.js';
 import './browser/parts/statusbar/statusbarPart.js';
+import './browser/parts/titlebar/menubar.contribution.js';
 // Notely: top-level File/Edit/View menus registered in minimalEditorMenus.contribution.ts
 
 //#endregion
@@ -63,8 +64,6 @@ import './browser/parts/statusbar/statusbarPart.js';
 
 import '../platform/actions/common/actions.contribution.js';
 import '../platform/undoRedo/common/undoRedoService.js';
-import './services/workspaces/common/editSessionIdentityService.js';
-import './services/workspaces/common/canonicalUriService.js';
 import './services/extensions/browser/extensionUrlHandler.js';
 import './services/keybinding/common/keybindingEditing.js';
 import './services/decorations/browser/decorationsService.js';
@@ -84,7 +83,6 @@ import './services/textresourceProperties/common/textResourcePropertiesService.j
 import './services/textfile/common/textEditorService.js';
 import './services/language/common/languageService.js';
 import './services/model/common/modelService.js';
-import './services/notebook/common/notebookDocumentService.js';
 import './services/commands/common/commandService.js';
 import './services/themes/browser/workbenchThemeService.js';
 import './services/label/common/labelService.js';
@@ -92,17 +90,10 @@ import './services/extensions/common/extensionManifestPropertiesService.js';
 import './services/extensionManagement/common/extensionGalleryService.js';
 import './services/extensionManagement/browser/extensionEnablementService.js';
 import './services/extensionManagement/browser/builtinExtensionsScannerService.js';
-import './services/extensionRecommendations/common/extensionIgnoredRecommendationsService.js';
-import './services/extensionRecommendations/common/workspaceExtensionsConfig.js';
-import './services/extensionManagement/common/extensionFeaturesManagemetService.js';
 import './services/notification/common/notificationService.js';
-import './services/userDataSync/common/userDataSyncUtil.js';
-import './services/userDataProfile/browser/userDataProfileImportExportService.js';
 import './services/userDataProfile/browser/userDataProfileManagement.js';
-import './services/userDataProfile/common/remoteUserDataProfiles.js';
-import './services/remote/common/remoteExplorerService.js';
 import './services/remote/common/remoteExtensionsScanner.js';
-import './services/terminal/common/embedderTerminalService.js';
+import './services/userDataProfile/common/remoteUserDataProfiles.js';
 import './services/workingCopy/common/workingCopyService.js';
 import './services/workingCopy/common/workingCopyFileService.js';
 import './services/workingCopy/common/workingCopyEditorService.js';
@@ -110,22 +101,18 @@ import './services/filesConfiguration/common/filesConfigurationService.js';
 import './services/views/browser/viewDescriptorService.js';
 import './services/views/browser/viewsService.js';
 import './services/quickinput/browser/quickInputService.js';
-import './services/userDataSync/browser/userDataSyncWorkbenchService.js';
+import './services/userDataSync/browser/userDataSyncEnablementService.js';
+import './services/chat/common/chatEntitlementService.js';
 import '../platform/hover/browser/hoverService.js';
 import '../platform/userInteraction/browser/userInteractionServiceImpl.js';
-import './services/outline/browser/outlineService.js';
 import './services/languageDetection/browser/languageDetectionWorkerServiceImpl.js';
 import '../editor/common/services/languageFeaturesService.js';
 import '../editor/common/services/semanticTokensStylingService.js';
 import '../editor/common/services/treeViewsDndService.js';
 import './services/textMate/browser/textMateTokenizationFeature.contribution.js';
 import './services/treeSitter/browser/treeSitter.contribution.js';
-import './services/userActivity/common/userActivityService.js';
-import './services/userActivity/browser/userActivityBrowser.js';
-import './services/userAttention/browser/userAttentionBrowser.js';
 import './services/editor/browser/editorPaneService.js';
 import './services/editor/common/customEditorLabelService.js';
-import './services/dataChannel/browser/dataChannelService.js';
 import './services/log/common/defaultLogLevels.js';
 
 import { InstantiationType, registerSingleton } from '../platform/instantiation/common/extensions.js';
@@ -193,6 +180,7 @@ import './contrib/list/browser/list.contribution.js';
 import './contrib/bulkEdit/browser/bulkEditService.js';
 import './contrib/accessibility/browser/accessibility.contribution.js';
 import './contrib/minimalEditor/browser/minimalAccessibilitySignal.contribution.js';
+import './contrib/minimalEditor/browser/nullQuickDiffModelService.js';
 import './contrib/minimalEditor/browser/minimalExtensionHostServices.contribution.js';
 import './contrib/minimalEditor/browser/minimalEditor.contribution.js';
 

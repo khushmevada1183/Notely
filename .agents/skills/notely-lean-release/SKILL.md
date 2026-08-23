@@ -78,3 +78,5 @@ Output: `../VSCode-linux-x64/` → `.build/linux/deb/amd64/` → `notely-*-linux
 
 - Custom esbuild entry dropping sessions/terminal workers (smaller core bundle)
 - Skip `npm ci` subfolders for excluded extensions (harder; allowlist is the practical win)
+
+**Production runtime trim:** see skill `notely-production-trim` — desktop services, minimal extension host, null stubs.
