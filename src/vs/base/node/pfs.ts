@@ -129,7 +129,7 @@ async function safeReaddirWithFileTypes(path: string): Promise<IDirent[]> {
 	try {
 		return await fs.promises.readdir(path, { withFileTypes: true });
 	} catch (error) {
-		if (error.code !== 'ENOENT') {
+		if (error.code !== 'ENOENT' && error.code !== 'EACCES' && error.code !== 'EPERM') {
 			console.warn('[node.js fs] readdir with filetypes failed with error: ', error);
 		}
 	}
