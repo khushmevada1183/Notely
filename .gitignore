@@ -37,6 +37,7 @@ dist
 dist-minimal/
 node_modules-minimal/
 logs/
+release-artifacts/
 .playwright-cli
 .playwright-mcp
 .claude/

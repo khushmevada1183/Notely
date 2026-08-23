@@ -27,6 +27,7 @@ import { IProductService } from '../../../../platform/product/common/productServ
 import { asJson, IRequestService, isClientError, isSuccess, readHeader, retryAfterFromHeaders } from '../../../../platform/request/common/request.js';
 import { IStorageService, StorageScope, StorageTarget } from '../../../../platform/storage/common/storage.js';
 import { ITelemetryService } from '../../../../platform/telemetry/common/telemetry.js';
+import product from '../../../../platform/product/common/product.js';
 import { IWorkbenchContribution, registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 import { AuthenticationSession, AuthenticationSessionAccount, IAuthenticationExtensionsService, IAuthenticationService } from '../../authentication/common/authentication.js';
 import { IWorkbenchEnvironmentService } from '../../environment/common/environmentService.js';
@@ -137,14 +138,18 @@ export class DefaultAccountService extends Disposable implements IDefaultAccount
 	private readonly _onDidChangeCopilotTokenInfo = this._register(new Emitter<ICopilotTokenInfo | null>());
 	readonly onDidChangeCopilotTokenInfo = this._onDidChangeCopilotTokenInfo.event;
 
-	private readonly defaultAccountConfig: IDefaultAccountConfig;
+	private readonly defaultAccountConfig: IDefaultAccountConfig | undefined;
 	private defaultAccountProvider: IDefaultAccountProvider | null = null;
 
 	constructor(
 		@IProductService productService: IProductService,
 	) {
 		super();
-		this.defaultAccountConfig = toDefaultAccountConfig(productService.defaultChatAgent);
+		if (productService.defaultChatAgent) {
+			this.defaultAccountConfig = toDefaultAccountConfig(productService.defaultChatAgent);
+		} else {
+			this.initBarrier.open();
+		}
 	}
 
 	async getDefaultAccount(): Promise<IDefaultAccount | null> {
@@ -156,10 +161,13 @@ export class DefaultAccountService extends Disposable implements IDefaultAccount
 		if (this.defaultAccountProvider) {
 			return this.defaultAccountProvider.getDefaultAccountAuthenticationProvider();
 		}
-		return {
-			...this.defaultAccountConfig.authenticationProvider.default,
-			enterprise: false
-		};
+		if (this.defaultAccountConfig) {
+			return {
+				...this.defaultAccountConfig.authenticationProvider.default,
+				enterprise: false
+			};
+		}
+		return { id: '', name: '', enterprise: false };
 	}
 
 	setDefaultAccountProvider(provider: IDefaultAccountProvider): void {
@@ -1175,6 +1183,9 @@ class DefaultAccountProviderContribution extends Disposable implements IWorkbenc
 		@IDefaultAccountService defaultAccountService: IDefaultAccountService,
 	) {
 		super();
+		if (!productService.defaultChatAgent) {
+			return;
+		}
 		const defaultAccountProvider = this._register(instantiationService.createInstance(DefaultAccountProvider, toDefaultAccountConfig(productService.defaultChatAgent)));
 		defaultAccountService.setDefaultAccountProvider(defaultAccountProvider);
 	}
@@ -1193,4 +1204,6 @@ registerAction2(class extends Action2 {
 	}
 });
 
-registerWorkbenchContribution2(DefaultAccountProviderContribution.ID, DefaultAccountProviderContribution, WorkbenchPhase.BlockStartup);
+if (product.defaultChatAgent) {
+	registerWorkbenchContribution2(DefaultAccountProviderContribution.ID, DefaultAccountProviderContribution, WorkbenchPhase.BlockStartup);
+}
