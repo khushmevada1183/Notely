@@ -71,6 +71,11 @@ Target: cold start to interactive editor **< 1000 ms** (Req 7). Headless timing 
 - Prior standalone Monaco/Electron-builder output under `dist-minimal/` is legacy; the workbench build is the supported path
 - For installable packages, use VS Code's native gulp packaging targets once `out/` is produced
 
+## Releases
+
+Automated multi-platform builds (Linux `.deb`, macOS `.dmg`, Windows `.exe`) are processed on push to `main` or version tags (`v*`) via `.github/workflows/notely-release.yml`.
+
 ## Branch
 
 Development branch: `feat/minimal-editor-workbench`
+
