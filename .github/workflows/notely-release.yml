@@ -71,11 +71,36 @@ jobs:
           cp "$DEB" "release-artifacts/notely-${VERSION}-linux-amd64.deb"
           ls -la release-artifacts/
 
-      - uses: actions/upload-artifact@v4
+      - name: Resolve release tag
+        id: rel
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            SHORT="${GITHUB_SHA:0:7}"
+            VER=$(node -p "require('./package.json').version")
+            echo "tag=v${VER}-main.${SHORT}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish Linux installer to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: linux-x64
-          path: release-artifacts/*
-          if-no-files-found: error
+          tag_name: ${{ steps.rel.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ steps.rel.outputs.prerelease == 'true' }}
+          generate_release_notes: true
+          files: release-artifacts/*
+          body: |
+            ## Install Notely
+
+            | Platform | Installer |
+            |----------|-----------|
+            | **Linux** (Debian/Ubuntu) | `notely-*-linux-amd64.deb` — `sudo apt install ./notely-*-linux-amd64.deb` |
+            | **macOS** (Apple Silicon) | `notely-*-mac-arm64.dmg` — open and drag Notely to Applications |
+            | **Windows** (x64) | `notely-*-win-x64-setup.exe` — run the user installer |
 
   darwin-arm64:
     name: macOS arm64
@@ -131,11 +156,36 @@ jobs:
             "release-artifacts/notely-${VERSION}-mac-arm64.dmg"
           ls -la release-artifacts/
 
-      - uses: actions/upload-artifact@v4
+      - name: Resolve release tag
+        id: rel
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            SHORT="${GITHUB_SHA:0:7}"
+            VER=$(node -p "require('./package.json').version")
+            echo "tag=v${VER}-main.${SHORT}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish macOS installer to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: darwin-arm64
-          path: release-artifacts/*
-          if-no-files-found: error
+          tag_name: ${{ steps.rel.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          prerelease: ${{ steps.rel.outputs.prerelease == 'true' }}
+          generate_release_notes: true
+          files: release-artifacts/*
+          body: |
+            ## Install Notely
+
+            | Platform | Installer |
+            |----------|-----------|
+            | **Linux** (Debian/Ubuntu) | `notely-*-linux-amd64.deb` — `sudo apt install ./notely-*-linux-amd64.deb` |
+            | **macOS** (Apple Silicon) | `notely-*-mac-arm64.dmg` — open and drag Notely to Applications |
+            | **Windows** (x64) | `notely-*-win-x64-setup.exe` — run the user installer |
 
   win32-x64:
     name: Windows x64
@@ -194,30 +244,9 @@ jobs:
           Copy-Item $setup.FullName "release-artifacts/notely-$version-win-x64-setup.exe"
           Get-ChildItem release-artifacts
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: win32-x64
-          path: release-artifacts/*
-          if-no-files-found: error
-
-  release:
-    name: Publish GitHub Release
-    needs: [linux-x64, darwin-arm64, win32-x64]
-    if: ${{ needs.linux-x64.result == 'success' && needs.darwin-arm64.result == 'success' && needs.win32-x64.result == 'success' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          path: release-artifacts
-          merge-multiple: true
-
-      - name: List release files
-        run: ls -la release-artifacts/
-
       - name: Resolve release tag
         id: rel
+        shell: bash
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
@@ -229,7 +258,7 @@ jobs:
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish GitHub Release
+      - name: Publish Windows installer to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.rel.outputs.tag }}
