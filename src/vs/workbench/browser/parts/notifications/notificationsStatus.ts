@@ -68,73 +68,10 @@ export class NotificationsStatus extends Disposable {
 	}
 
 	private updateNotificationsCenterStatusItem(): void {
-
-		// Figure out how many notifications have progress only if neither
-		// toasts are visible nor center is visible. In that case we still
-		// want to give a hint to the user that something is running.
-		let notificationsInProgress = 0;
-		if (!this.isNotificationsCenterVisible && !this.isNotificationsToastsVisible) {
-			for (const notification of this.model.notifications) {
-				if (notification.hasProgress) {
-					notificationsInProgress++;
-				}
-			}
-		}
-
-		// Show the status bar entry depending on do not disturb setting
-
-		let statusProperties: IStatusbarEntry = {
-			name: localize('status.notifications', "Notifications"),
-			text: `${notificationsInProgress > 0 || this.newNotificationsCount > 0 ? '$(bell-dot)' : '$(bell)'}`,
-			ariaLabel: localize('status.notifications', "Notifications"),
-			command: this.isNotificationsCenterVisible ? HIDE_NOTIFICATIONS_CENTER : SHOW_NOTIFICATIONS_CENTER,
-			tooltip: this.getTooltip(notificationsInProgress),
-			showBeak: this.isNotificationsCenterVisible
-		};
-
-		if (this.notificationService.getFilter() === NotificationsFilter.ERROR) {
-			statusProperties = {
-				...statusProperties,
-				text: `${notificationsInProgress > 0 || this.newNotificationsCount > 0 ? '$(bell-slash-dot)' : '$(bell-slash)'}`,
-				ariaLabel: localize('status.doNotDisturb', "Do Not Disturb"),
-				tooltip: localize('status.doNotDisturbTooltip', "Do Not Disturb Mode is Enabled")
-			};
-		}
-
-		// For top-right position, hide the status bar bell entirely
-		// (it is shown in the title bar instead via menu registration)
-		const position = getNotificationsPosition(this.configurationService);
-		if (position === NotificationsPosition.TOP_RIGHT) {
-			this.notificationsCenterStatusItem?.dispose();
+		// No-op in Notely: notification bell icon in status bar is disabled
+		if (this.notificationsCenterStatusItem) {
+			this.notificationsCenterStatusItem.dispose();
 			this.notificationsCenterStatusItem = undefined;
-
-			this.currentAlignment = undefined;
-		}
-
-		// For other positions, figure out the desired alignment
-		else {
-			const desiredAlignment = this.getDesiredAlignment();
-
-			// If alignment changed, dispose old entry and create a new one
-			if (this.currentAlignment !== desiredAlignment) {
-				this.notificationsCenterStatusItem?.dispose();
-				this.notificationsCenterStatusItem = undefined;
-
-				this.currentAlignment = desiredAlignment;
-			}
-
-			if (!this.notificationsCenterStatusItem) {
-				this.notificationsCenterStatusItem = this.statusbarService.addEntry(
-					statusProperties,
-					'status.notifications',
-					this.currentAlignment,
-					this.currentAlignment === StatusbarAlignment.LEFT
-						? Number.MAX_SAFE_INTEGER 	// almost leftmost on the left side
-						: Number.NEGATIVE_INFINITY 	// rightmost on the right side
-				);
-			} else {
-				this.notificationsCenterStatusItem.update(statusProperties);
-			}
 		}
 	}
 

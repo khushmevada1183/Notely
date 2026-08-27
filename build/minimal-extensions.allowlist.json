@@ -1,6 +1,10 @@
 {
   "comment": "Extensions packaged by `gulp notely-linux-x64`. Edit themes/grammars/exclude here.",
-  "themes": ["theme-*"],
+  "themes": [
+    "theme-defaults",
+    "theme-solarized-dark",
+    "theme-vscicons"
+  ],
   "grammars": [
     "bat", "coffeescript", "cpp", "csharp", "css", "dart", "diff", "docker",
     "fsharp", "go", "groovy", "handlebars", "hlsl", "html", "ini", "java",

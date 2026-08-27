@@ -921,18 +921,3 @@ MenuRegistry.appendMenuItem(ThemesSubMenu, {
 	order: 1
 });
 
-MenuRegistry.appendMenuItem(ThemesSubMenu, {
-	command: {
-		id: SelectFileIconThemeCommandId,
-		title: localize('themes.selectIconTheme.label', "File Icon Theme")
-	},
-	order: 2
-});
-
-MenuRegistry.appendMenuItem(ThemesSubMenu, {
-	command: {
-		id: SelectProductIconThemeCommandId,
-		title: localize('themes.selectProductIconTheme.label', "Product Icon Theme")
-	},
-	order: 3
-});

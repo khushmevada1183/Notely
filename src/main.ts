@@ -361,9 +361,11 @@ function configureCommandlineSwitchesSync(cliArgs: NativeParsedArgs) {
 	// Runtime sets the default version to 3, refs https://github.com/electron/electron/pull/44426
 	app.commandLine.appendSwitch('xdg-portal-required-version', '4');
 
-	// Increase the maximum number of active WebGL contexts as each terminal may
-	// use up to 2
-	app.commandLine.appendSwitch('max-active-webgl-contexts', '32');
+	// Notely lightweight performance & memory switches
+	app.commandLine.appendSwitch('disable-background-networking');
+	app.commandLine.appendSwitch('disable-component-update');
+	app.commandLine.appendSwitch('disable-domain-reliability');
+	app.commandLine.appendSwitch('disable-sync');
 
 	return argvConfig;
 }
@@ -548,7 +550,7 @@ function configureCrashReporter(): void {
 }
 
 function getJSFlags(cliArgs: NativeParsedArgs, argvConfig: IArgvConfig): string | null {
-	const jsFlags: string[] = [];
+	const jsFlags: string[] = ['--max-old-space-size=64', '--optimize-for-size'];
 
 	// Add any existing JS flags we already got from the command line
 	if (cliArgs['js-flags']) {

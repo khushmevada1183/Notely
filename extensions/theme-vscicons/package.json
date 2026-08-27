@@ -1,0 +1,23 @@
+{
+  "name": "vscode-theme-vscicons",
+  "displayName": "Icons",
+  "description": "Icons file icon theme for Notely",
+  "version": "1.2.10",
+  "publisher": "vscode",
+  "license": "MIT",
+  "categories": [
+    "Themes"
+  ],
+  "contributes": {
+    "iconThemes": [
+      {
+        "id": "vscicons",
+        "label": "Icons",
+        "path": "./icons.json"
+      }
+    ]
+  },
+  "engines": {
+    "vscode": "*"
+  }
+}
