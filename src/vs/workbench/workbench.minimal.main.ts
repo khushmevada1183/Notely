@@ -178,6 +178,7 @@ import './contrib/bulkEdit/browser/bulkEditService.js';
 import './contrib/accessibility/browser/accessibility.contribution.js';
 import './contrib/minimalEditor/browser/minimalAccessibilitySignal.contribution.js';
 import './contrib/minimalEditor/browser/nullQuickDiffModelService.js';
+import './contrib/minimalEditor/browser/nullTreeSitterLibraryService.js';
 import './contrib/minimalEditor/browser/minimalExtensionHostServices.contribution.js';
 import './contrib/minimalEditor/browser/minimalEditor.contribution.js';
 
